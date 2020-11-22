@@ -35,12 +35,16 @@ int			parser(t_parser *parser, char *file_name)
 {
 	int		fd;
 	t_list	*list;
-//	char	*map_first_line;
-	t_list *h;
 
 	init_parser(parser);
 	if ((fd = open(file_name, O_RDONLY)) < 0)
-		return (-1);
+	{
+		perror("Error\n");
+		exit(EXIT_FAILURE);
+	}
+	parse_in_list(&list, fd);
+	parse_list_to_structer(parser, &list);
+
 
 	return (0);
 }

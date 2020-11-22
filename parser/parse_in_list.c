@@ -14,19 +14,22 @@
 
 static int		is_empty_line(char *line)
 {
-	while (*line != '\0')
-	{
-		if (!ft_isspace(*line))
-			return (0);
-		line++;
-	}
+	if (*line == '\0')
+		return (0);
+/*while (*line != '\0')
+**	{
+**		if (*line != '\n')
+**			return (0);
+**		line++;
+**	}
+*/
 	return (1);
 }
 
 static void		parse_in_list_failure_case(char **line)
 {
 	free(*line);
-	perror("Malloc failure: ");
+	perror("Error\n");
 	exit(EXIT_FAILURE);
 }
 
@@ -67,6 +70,7 @@ t_list			*parse_in_list(t_list **list, int fd)
 	char	*line;
 	int		gnl_flag;
 	t_list	*tail;
+	int 	is_map_started;
 
 	*list = NULL;
 	while ((gnl_flag = get_next_line(fd, &line)) > 0)

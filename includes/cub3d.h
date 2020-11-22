@@ -71,5 +71,6 @@ char				*parser_identifiers(t_parser *parser, int fd);
 int					parser(t_parser *parser, char *file_name);
 t_list				*parse_in_list(t_list **list, int fd);
 void				remove_str(void *content);
+int					parse_list_to_structer(t_parser *parser, t_list **list)
 
 #endif

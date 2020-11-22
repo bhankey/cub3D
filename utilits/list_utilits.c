@@ -16,6 +16,8 @@ void remove_str(void *content)
 {
 	char *str;
 
+	if (content == NULL)
+		return ;
 	str = (char *)content;
 	free(str);
 }
