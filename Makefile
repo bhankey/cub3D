@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS	=	main.c parser/parse_map.c parser/parser.c
+SRCS	=	main.c parser/parse_map.c parser/parser.c parser/parse_in_list.c utilits/list_utilits.c GNL/get_next_line.c GNL/get_next_line_utils.c
 
 NAME	=	cub3D
 
@@ -18,7 +18,7 @@ OBJS	=	$(SRCS:.c=.o)
 
 CC		=	gcc
 
-CFLAGS	= -Wall -Wextra -Werror -I ./includes -I ./libft -I ./$(MLX_D)
+CFLAGS	= -Wall -Wextra -Werror -I ./includes -I ./libft -I ./$(MLX_D) -I ./GNL
 
 ifeq ($(shell uname), Linux)
 	MLX_D = minilibx-linux
@@ -33,9 +33,9 @@ endif
 all:		$(NAME)
 
 $(NAME):	$(OBJS)
-			$(MAKE) -C libft
+			$(MAKE) bonus -C libft
 			$(MAKE) -C 	$(MLX_D)
-			$(CC) $(CFALGS) -o $(NAME) $(OBJS) -L libft/ -lft $(MLX) -lm
+			$(CC) $(CFALGS) -o $(NAME) $(OBJS) ./libft/libft.a $(MLX) -lm
 
 clean:
 			rm -f $(OBJS)
@@ -44,7 +44,6 @@ clean:
 
 fclean:		clean
 			$(MAKE) fclean -C libft
-			$(MAKE) fclean -C $(MLX_D)
 			rm -f $(NAME)
 re:			fclean all
 

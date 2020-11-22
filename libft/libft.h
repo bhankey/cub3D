@@ -67,5 +67,6 @@ t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
 int					ft_strcmp(const char *s1, const char *s2);
 void				*ft_memalloc(size_t size);
 char				*ft_strnew(size_t size);
+int					ft_isspace(int ch);
 
 #endif

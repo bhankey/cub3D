@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bhankey <bhankey@student.21-school.ru>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/11/22 17:17:31 by bhankey           #+#    #+#             */
+/*   Updated: 2020/11/22 17:17:36 by bhankey          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "cub3d.h"
 
@@ -19,13 +30,17 @@ static void	init_parser(t_parser *parser)
 	parser->map = NULL;
 }
 
+
 int			parser(t_parser *parser, char *file_name)
 {
 	int		fd;
-	char	*map_first_line;
+	t_list	*list;
+//	char	*map_first_line;
+	t_list *h;
 
 	init_parser(parser);
 	if ((fd = open(file_name, O_RDONLY)) < 0)
 		return (-1);
-	map_first_line = parser_identifiers(parser, fd);
+
+	return (0);
 }
