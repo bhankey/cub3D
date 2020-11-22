@@ -18,7 +18,7 @@ OBJS	=	$(SRCS:.c=.o)
 
 CC		=	gcc
 
-CFLAGS	= -Wall -Wextra -Werror -I ./includes -I ./libft -I ./minilibx-linux
+CFLAGS	= -Wall -Wextra -Werror -I ./includes -I ./libft -I ./$(MLX_D)
 
 ifeq ($(shell uname), Linux)
 	MLX_D = minilibx-linux

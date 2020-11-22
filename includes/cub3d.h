@@ -15,6 +15,7 @@
 
 # include "mlx.h"
 # include "libft.h"
+# include "fcntl.h"
 
 /*
 ** define scale for normal results
@@ -40,9 +41,9 @@ typedef struct		s_resolution
 
 typedef struct		s_color
 {
-	int				red;
-	int				green;
-	int				blue;
+	unsigned char	red;
+	unsigned char	green;
+	unsigned char	blue;
 }					t_color;
 
 typedef struct		s_parser
@@ -61,5 +62,8 @@ typedef struct		s_parser
 /*
 ** Parser
 */
+
+char				*parser_identifiers(t_parser *parser, int fd);
+int					parser(t_parser *parser, char *file_name);
 
 #endif
