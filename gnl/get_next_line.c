@@ -43,6 +43,7 @@ int		string_realloc(t_line *string)
 	while (*tmp)
 		*line++ = *tmp++;
 	*line = '\0';
+	free(tmp);
 	return (0);
 }
 
