@@ -45,13 +45,33 @@ typedef struct		s_resolution
 
 typedef struct		s_color
 {
-	unsigned char	red;
-	unsigned char	green;
-	unsigned char	blue;
+	int				red;
+	int				green;
+	int				blue;
 }					t_color;
+
+typedef struct		s_map
+{
+	char			**map;
+	int 			max_string;
+}					t_map;
+
+/*
+** parser_flag
+** 00000000 - nothing parsed
+** 00000001 - resolution_parsed
+** 00000010 - north_texture_parsed
+** 00000100 - south_texture_parsed
+** 00001000 - west_texture_parsed
+** 00010000 - east_texture_parsed
+** 00100000 - sprite_parsed
+** 01000000 - floor_color_parsed
+** 10000000 - ceiling_color_parsed
+ */
 
 typedef struct		s_parser
 {
+	unsigned char 	parser_flags;
 	t_resolution	resolution;
 	char			*north_texture;
 	char			*south_texture;
@@ -60,7 +80,7 @@ typedef struct		s_parser
 	char			*sprite_texture;
 	t_color			floor_color;
 	t_color			ceiling_color;
-	char			**map;
+	t_map 			map;
 }					t_parser;
 
 /*
@@ -71,6 +91,11 @@ char				*parser_identifiers(t_parser *parser, int fd);
 int					parser(t_parser *parser, char *file_name);
 t_list				*parse_in_list(t_list **list, int fd);
 void				remove_str(void *content);
-int					parse_list_to_structer(t_parser *parser, t_list **list)
+void				parse_resolution(t_parser *parser,char *line);
+void				parse_texture(t_parser *parser,char *line);
+void				parse_color(t_parser *parser,char *line);
+char				**parse_and_check_map(t_map *map,int fd);
+void				exit_with_error_print(void);
+void				exit_with_einval_error(void);
 
 #endif

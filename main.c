@@ -4,6 +4,7 @@
 int main()
 {
 	t_parser pas;
-	parser(&pas, "t");
-	return 0;
+	char **l;
+	parser(&pas, "map.cub");
+	exit( 0);
 }
