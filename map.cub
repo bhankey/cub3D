@@ -1,0 +1,26 @@
+NO textures/brick.xpm
+SO textures/redstone.xpm
+WE textures/wood.xpm
+F 255,153,51
+EA textures/brick.xpm
+S  textures/jojo.xpm
+
+R 600 300
+
+C 0,0,153
+
+
+
+
+1111111111
+10000000011111111
+10000000000000001
+100000S0000000001
+10000000011111111
+1020002001
+1000020001
+1010000201
+1111111111
+
+
+

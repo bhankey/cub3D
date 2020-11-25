@@ -37,12 +37,29 @@ typedef struct		s_point
 	int				y;
 }					t_point;
 
+typedef struct	s_window
+{
+	void		*mlx;
+	void		*win;
+	void		*img;
+	void		*addr;
+	int			line_l;
+	int			bpp;
+	int			en;
+}				t_window;
+
 typedef struct		s_resolution
 {
 	int				width;
 	int				height;
 }					t_resolution;
 
+typedef struct		s_player
+{
+	int 			i;
+	int 			j;
+	char			orientation;
+}					t_player;
 typedef struct		s_color
 {
 	int				red;
@@ -54,6 +71,8 @@ typedef struct		s_map
 {
 	char			**map;
 	int 			max_string;
+	t_player 		player;
+	int 			string_count;
 }					t_map;
 
 /*
@@ -97,5 +116,11 @@ void				parse_color(t_parser *parser,char *line);
 char				**parse_and_check_map(t_map *map,int fd);
 void				exit_with_error_print(void);
 void				exit_with_einval_error(void);
+
+/*
+** Engine
+*/
+
+int					engine(t_parser *parser);
 
 #endif

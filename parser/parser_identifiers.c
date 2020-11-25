@@ -12,9 +12,9 @@
 
 #include "cub3d.h"
 
-void			parse_resolution(t_parser *parser,char *line)
+void			parse_resolution(t_parser *parser, char *line)
 {
-	if ((parser->parser_flags & 1) == 1)
+	if ((parser->parser_flags & 1u) != 0)
 		exit_with_einval_error();
 	line += 2;
 	while (ft_isspace(*line))
@@ -33,12 +33,12 @@ void			parse_resolution(t_parser *parser,char *line)
 	parser->parser_flags |= 1;
 }
 
-void			parse_texture(t_parser *parser,char *line)
+void			parse_texture(t_parser *parser, char *line)
 {
 	int		i;
 	int		j;
 	char	*texture;
-	int 	len;
+	int		len;
 
 	i = 3;
 	while (ft_isspace(line[i]))
@@ -109,7 +109,7 @@ static int		parse_color_num(char *line)
 	return (res);
 }
 
-void			parse_color(t_parser *parser,char *line)
+void			parse_color(t_parser *parser, char *line)
 {
 	unsigned int	type;
 	t_color			*color;
@@ -124,7 +124,7 @@ void			parse_color(t_parser *parser,char *line)
 		color = &(parser->ceiling_color);
 		type = 128;
 	}
-	if ((parser->parser_flags & type) == 1)
+	if ((parser->parser_flags & type) != 0)
 		exit_with_einval_error();
 	line += 2;
 	while (ft_isspace(*line))

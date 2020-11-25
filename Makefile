@@ -10,7 +10,8 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS	=	main.c parser/parse_map.c parser/parser.c parser/parse_in_list.c utilits/list_utilits.c GNL/get_next_line.c GNL/get_next_line_utils.c
+SRCS	=	main.c parser/parse_map.c parser/parser.c parser/parser_identifiers.c utilits/list_utilits.c \
+ 			utilits/different_utils.c gnl/get_next_line.c gnl/get_next_line_utils.c engine/main_engine.c
 
 NAME	=	cub3D
 
@@ -18,7 +19,7 @@ OBJS	=	$(SRCS:.c=.o)
 
 CC		=	gcc
 
-CFLAGS	= -Wall -Wextra -Werror -I ./includes -I ./libft -I ./$(MLX_D) -I ./GNL
+CFLAGS	= -Wall -Wextra -Werror -I ./includes -I ./libft -I ./$(MLX_D) -I ./gnl
 
 ifeq ($(shell uname), Linux)
 	MLX_D = minilibx-linux
