@@ -24,10 +24,11 @@ CFLAGS	= -Wall -Wextra -Werror -I ./includes -I ./libft -I ./$(MLX_D) -I ./gnl
 ifeq ($(shell uname), Linux)
 	MLX_D = minilibx-linux
 	MLX = -L minilibx-linux -lmlx -lXext -lX11 -lbsd
-
+	MLX_MAC =  
 else
 	MLX_D = minilibx_mms_20200219
-	MLX = -L minilibx_mms_20200219 -lmlx -framework OpenGL -framework AppKit
+	MLX = -L $(MLX_D) -lmlx -framework OpenGL -framework AppKit
+	MLX_MAC = cp $(MLX_D)/libmlx.dylib ./
 
 endif
 
@@ -36,7 +37,8 @@ all:		$(NAME)
 $(NAME):	$(OBJS)
 			$(MAKE) bonus -C libft
 			$(MAKE) -C 	$(MLX_D)
-			$(CC) $(CFALGS) -o $(NAME) $(OBJS) ./libft/libft.a $(MLX) -lm
+			$(MLX_MAC)
+			$(CC) $(CFALGS) -o $(NAME) $(OBJS) ./libft/libft.a $(MLX)
 
 clean:
 			rm -f $(OBJS)
