@@ -54,12 +54,29 @@ typedef struct		s_resolution
 	int				height;
 }					t_resolution;
 
-typedef struct		s_player
+typedef struct		s_player_map
 {
 	int 			i;
 	int 			j;
 	char			orientation;
+}					t_player_map;
+
+typedef struct 		s_player
+{
+	float			x;
+	float			y;
+	float			dir;
+	float			start;
+	float			end;
 }					t_player;
+
+typedef struct		s_all
+{
+	t_window		win;
+	t_player		player;
+	char**			map;
+};
+
 typedef struct		s_color
 {
 	int				red;
@@ -71,7 +88,7 @@ typedef struct		s_map
 {
 	char			**map;
 	int 			max_string;
-	t_player 		player;
+	t_player_map 	player;
 	int 			string_count;
 }					t_map;
 
