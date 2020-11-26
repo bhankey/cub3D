@@ -19,18 +19,47 @@ void			parse_resolution(t_parser *parser, char *line)
 	line += 2;
 	while (ft_isspace(*line))
 		line++;
-	parser->resolution.width = ft_atoi(line);
+	parser->res.width = ft_atoi(line);
 	while (ft_isdigit(*line))
 		line++;
 	if (ft_isspace(*line))
 		line++;
-	parser->resolution.height = ft_atoi(line);
+	parser->res.height = ft_atoi(line);
 	while (ft_isdigit(*line))
 		line++;
-	if (*line != '\0' || parser->resolution.width <= 0 ||
-	parser->resolution.height <= 0)
+	if (*line != '\0' || parser->res.width <= 0 ||
+		parser->res.height <= 0)
 		exit_with_einval_error();
 	parser->parser_flags |= 1;
+}
+
+static void		parse_texture_help(t_parser *parser, char *line, char **texture)
+{
+	if (*line == 'N')
+	{
+		parser->parser_flags |= 2u;
+		parser->north_texture = *texture;
+	}
+	else if (*line == 'S' && *(line + 1) == 'O')
+	{
+		parser->parser_flags |= 4u;
+		parser->south_texture = *texture;
+	}
+	else if (*line == 'W')
+	{
+		parser->parser_flags |= 8u;
+		parser->west_texture = *texture;
+	}
+	else if (*line == 'E')
+	{
+		parser->parser_flags |= 16u;
+		parser->east_texture = *texture;
+	}
+	else
+	{
+		parser->parser_flags |= 32u;
+		parser->sprite_texture = *texture;
+	}
 }
 
 void			parse_texture(t_parser *parser, char *line)
@@ -56,31 +85,7 @@ void			parse_texture(t_parser *parser, char *line)
 	texture[j] = '\0';
 	if (*texture == '\0')
 		exit_with_einval_error();
-	if (*line == 'N')
-	{
-		parser->parser_flags |= 2u;
-		parser->north_texture = texture;
-	}
-	else if (*line == 'S' && *(line + 1) == 'O')
-	{
-		parser->parser_flags |= 4u;
-		parser->south_texture = texture;
-	}
-	else if (*line == 'W')
-	{
-		parser->parser_flags |= 8u;
-		parser->west_texture = texture;
-	}
-	else if (*line == 'E')
-	{
-		parser->parser_flags |= 16u;
-		parser->east_texture = texture;
-	}
-	else
-	{
-		parser->parser_flags |= 32u;
-		parser->sprite_texture = texture;
-	}
+	parse_texture_help(parser, line, &texture);
 }
 
 static int		parse_color_num(char *line)

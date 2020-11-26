@@ -43,9 +43,9 @@ typedef struct	s_window
 	void		*win;
 	void		*img;
 	void		*addr;
-	int			line_l;
+	int			line_length;
 	int			bpp;
-	int			en;
+	int			endian;
 }				t_window;
 
 typedef struct		s_resolution
@@ -75,7 +75,7 @@ typedef struct		s_all
 	t_window		win;
 	t_player		player;
 	char**			map;
-};
+}					t_all;
 
 typedef struct		s_color
 {
@@ -108,7 +108,7 @@ typedef struct		s_map
 typedef struct		s_parser
 {
 	unsigned char 	parser_flags;
-	t_resolution	resolution;
+	t_resolution	res;
 	char			*north_texture;
 	char			*south_texture;
 	char			*west_texture;
@@ -138,6 +138,6 @@ void				exit_with_einval_error(void);
 ** Engine
 */
 
-int					engine(t_parser *parser);
+int					engine(t_parser *par);
 
 #endif

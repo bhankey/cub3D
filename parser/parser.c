@@ -14,8 +14,8 @@
 
 static void	init_parser(t_parser *parser)
 {
-	parser->resolution.width = -1;
-	parser->resolution.height = -1;
+	parser->res.width = -1;
+	parser->res.height = -1;
 	parser->north_texture = "";
 	parser->south_texture = "";
 	parser->west_texture = "";
@@ -76,7 +76,6 @@ static void	parse_all_stuff(t_parser *parser, int fd)
 	int		map_started;
 	int		gnl_status;
 
-	gnl_status = 0;
 	map_started = 0;
 	while (!map_started && (gnl_status = get_next_line(fd, &line)) > 0)
 	{
@@ -111,8 +110,5 @@ int			parser(t_parser *parser, char *file_name)
 		exit(EXIT_FAILURE);
 	}
 	parse_all_stuff(parser, fd);
-	//Распарсить параметры (Если нет какого-то из параметров, то выдаем ошибку
-	//Распарсить саму карту (Сначала можем записать в список, потом посчитать самую большую строку,
-	// и добиваем размер карты до самой большой строки ' ', далее переписываем все в массив.
 	return (0);
 }

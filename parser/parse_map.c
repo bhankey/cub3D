@@ -109,6 +109,29 @@ static char			**list_to_arr(t_list **list, t_map *map)
 	return (arr_map);
 }
 
+static int			check_for_forbidden_helper(char ch, int i)
+{
+	if ((ch == 'N' || ch == 'S' || ch == 'W' || ch == 'E') && i == -1)
+		return (1);
+	return (0);
+}
+
+static void			check_for_forbidden_helper_v2(t_map *map, int i, int *j,
+											char ch)
+{
+	map->player.i = i;
+	map->player.j = *j;
+	map->player.orientation = ch;
+	(*j)++;
+}
+
+static int			check_for_forbidden_helper_v3(char ch)
+{
+	if (ch == '0' || ch == '1' || ch == '2' || ch == ' ')
+		return (1);
+	return (0);
+}
+
 static void			check_for_forbidden_char(t_map *map)
 {
 	char	**arr_map;
@@ -131,29 +154,18 @@ static void			check_for_forbidden_char(t_map *map)
 			arr_map[i] = NULL;
 		}
 		else
-		{
 			while (arr_map[i][j] != '\0')
-			{
-				if ((arr_map[i][j] == 'N' || arr_map[i][j] == 'S' ||
-					arr_map[i][j] == 'W' || arr_map[i][j] == 'E') &&
-					map->player.i == -1)
-				{
-					map->player.i = i;
-					map->player.j = j;
-					map->player.orientation = arr_map[i][j++];
-				}
-				else if (arr_map[i][j] == '0' || arr_map[i][j] == '1' ||
-						arr_map[i][j] == '2' || arr_map[i][j] == ' ')
+				if (check_for_forbidden_helper(arr_map[i][j], map->player.i))
+					check_for_forbidden_helper_v2(map, i, &j, arr_map[i][j]);
+				else if (check_for_forbidden_helper_v3(arr_map[i][j]))
 					j++;
 				else
 					exit_with_einval_error();
-			}
-		}
 		i++;
 	}
 }
 
-static void 		flood_fill(t_map *map, int x, int y)
+static void			flood_fill(t_map *map, int x, int y)
 {
 	if ((x >= 0 && y >= 0 && x < map->string_count && map->map[x][y] != '\0' &&
 	(map->map[x][y] == '0' || map->map[x][y] == '2') &&
@@ -168,12 +180,12 @@ static void 		flood_fill(t_map *map, int x, int y)
 		flood_fill(map, x, y + 1);
 		flood_fill(map, x, y - 1);
 	}
-	else if ((x >= map->string_count || y < 0 || x < 0)|| (map->map[x][y] != '1' && map->map[x][y] != '-' &&
-	map->map[x][y] != '+') )
+	else if ((x >= map->string_count || y < 0 || x < 0) ||
+	(map->map[x][y] != '1' && map->map[x][y] != '-' && map->map[x][y] != '+'))
 		exit_with_einval_error();
 }
 
-static void 		flood_fill_check(t_map *map)
+static void			flood_fill_check(t_map *map)
 {
 	t_point point;
 
@@ -181,6 +193,7 @@ static void 		flood_fill_check(t_map *map)
 	point.y = map->player.j;
 	flood_fill(map, point.x, point.y);
 }
+
 char				**parse_and_check_map(t_map *map, int fd)
 {
 	t_list	*l_map;
@@ -191,9 +204,8 @@ char				**parse_and_check_map(t_map *map, int fd)
 	if (map->player.i == -1)
 		exit_with_einval_error();
 	map->string_count = 0;
-	while(map->map[map->string_count])
+	while (map->map[map->string_count])
 		map->string_count++;
-	//Все же необходимо малочить новый массив и добивать до самой большой строки пробелами
 	flood_fill_check(map);
 	return (map->map);
 }
