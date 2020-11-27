@@ -20,12 +20,13 @@
 # include <errno.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <math.h>
 
 /*
 ** define scale for normal results
 */
 
-# define SCALE 16
+# define SCALE 32
 
 /*
 ** All structures
@@ -70,13 +71,6 @@ typedef struct 		s_player
 	float			end;
 }					t_player;
 
-typedef struct		s_all
-{
-	t_window		win;
-	t_player		player;
-	char**			map;
-}					t_all;
-
 typedef struct		s_color
 {
 	int				red;
@@ -119,6 +113,12 @@ typedef struct		s_parser
 	t_map 			map;
 }					t_parser;
 
+typedef struct		s_all
+{
+	t_window		*manager;
+	t_player		*player;
+	t_parser		*parser;
+}					t_all;
 /*
 ** Parser
 */

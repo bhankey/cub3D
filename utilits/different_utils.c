@@ -9,6 +9,6 @@ void exit_with_error_print(void)
 
 void exit_with_einval_error(void)
 {
-	strerror(EINVAL);
+	errno = EINVAL;
 	exit_with_error_print();
 }

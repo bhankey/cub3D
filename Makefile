@@ -38,7 +38,7 @@ $(NAME):	$(OBJS)
 			$(MAKE) bonus -C libft
 			$(MAKE) -C 	$(MLX_D)
 			$(MLX_MAC)
-			$(CC) $(CFALGS) -o $(NAME) $(OBJS) ./libft/libft.a $(MLX)
+			$(CC) $(CFALGS) -o $(NAME) $(OBJS) ./libft/libft.a $(MLX) -lm
 
 clean:
 			rm -f $(OBJS)
