@@ -92,6 +92,11 @@ int		move_player(int keycode, t_all *all)
 		all->player->y += ((float)1 / SCALE);
 	else if (keycode == 65362)
 		all->player->y -= ((float)1 / SCALE);
+	else if (keycode == 65307)
+	{
+		mlx_destroy_window(all->manager->mlx, all->manager->win);
+		exit(EXIT_SUCCESS);
+	}
 	fill_and_print_image(all, all->parser);
 	return (1);
 }
