@@ -17,7 +17,7 @@ NAME	=	cub3D
 
 OBJS	=	$(SRCS:.c=.o)
 
-CC		=	gcc
+CC		=	clang
 
 CFLAGS	= -Wall -Wextra -Werror -I ./includes -I ./libft -I ./$(MLX_D) -I ./gnl
 

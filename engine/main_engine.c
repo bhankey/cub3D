@@ -2,8 +2,7 @@
 #include "cub3d.h"
 
 
-
-void 	my_pixel_put(t_window *data, int x, int y, int color)
+void 	pixel_put(t_window *data, int x, int y, int color)
 {
 	char *dst;
 
@@ -24,7 +23,7 @@ void 	print_upscale(t_window *win, float x, float y, int color)
 		j = 0;
 		while (j < SCALE)
 		{
-			my_pixel_put(win, x + j, y + i, color);
+			pixel_put(win, x + j, y + i, color);
 			j++;
 		}
 		i++;
@@ -45,7 +44,7 @@ void	print_map(char **map, t_window *win, int x, int y)
 			if (map[j][i] == '1')
 				print_upscale(win, x + i, j + y, 0xFFFFFF);
 			else if (map[j][i] == '+')
-				print_upscale(win, x + i, j + y, 0x00FF0000);
+				print_upscale(win, x + i, j + y, 0xFF0000);
 			i++;
 		}
 		j++;
@@ -56,19 +55,37 @@ void	init_player(t_player *player, t_parser *par)
 {
 	player->x = par->map.player.j;
 	player->y = par->map.player.i;
-	if (par->map.player.orientation == 'N')
+	if (par->map.player.orientation == 'S')
 		player->dir = M_PI/2;
-	else if (par->map.player.orientation == 'S')
+	else if (par->map.player.orientation == 'N')
 		player->dir = M_PI + M_PI_2;
-	else if (par->map.player.orientation == 'S')
+	else if (par->map.player.orientation == 'W')
 		player->dir = M_PI;
 	else
 		player->dir = 0;
+	player->fov = M_PI / 4.0f;
 }
 
 void 	draw_player(t_all *all)
 {
-	print_upscale(all->manager, all->player->x, all->player->y, 0x00FF00);
+	double pix;
+
+	print_upscale(all->manager, all->player->x, all->player->y, 0x204050);
+	t_player plr = *(all->player);
+	plr.x = (plr.x * SCALE) + SCALE / 2;
+	plr.y = plr.y * SCALE + SCALE / 2;
+	pix = 0;
+	while (all->parser->map.map[(int)(plr.y / SCALE)][(int)(plr.x / SCALE)] != '1')
+	{
+		pixel_put(all->manager, plr.x, plr.y, 0xFFFF00);
+		plr.x += cos(plr.dir);
+		plr.y += sin(plr.dir);
+		pix += 1.0;
+	}
+	pix /= SCALE;
+	fprintf(stderr, "\npix = %lf\n", pix);
+	fprintf(stderr, "\ncenter_x = %lf\n", all->player->x);
+	fprintf(stderr, "\ncenter_y = %lf\n", all->player->y);
 }
 
 void 	fill_and_print_image(t_all *all, t_parser *par)
@@ -85,13 +102,19 @@ int		move_player(int keycode, t_all *all)
 {
 	fprintf(stderr, "%d\n", keycode);
 	if (keycode == 65361)
-		all->player->x -= ((float)1 / SCALE);
+		all->player->dir -= 0.05f;
 	else if (keycode == 65363)
-		all->player->x += ((float)1 / SCALE);
+		all->player->dir += 0.05f;
 	else if (keycode == 65364)
-		all->player->y += ((float)1 / SCALE);
+	{
+		all->player->y -= (sin(all->player->dir)) / SCALE * 5 ;
+		all->player->x -= (cos(all->player->dir)) / SCALE * 5;
+	}
 	else if (keycode == 65362)
-		all->player->y -= ((float)1 / SCALE);
+	{
+		all->player->y += (sin(all->player->dir)) / SCALE * 5;
+		all->player->x += (cos(all->player->dir)) / SCALE * 5;
+	}
 	else if (keycode == 65307)
 	{
 		mlx_destroy_window(all->manager->mlx, all->manager->win);
@@ -114,8 +137,6 @@ int engine(t_parser *par)
 	all.manager->mlx = mlx_init();
 	all.manager->win = mlx_new_window(all.manager->mlx, par->res.width, par->res.height, "cub3D");
 	fill_and_print_image(&all, par);
-//	mlx_put_image_to_window(all.manager->mlx, all.manager->win, all.manager->img, 0, 0);
-	//mlx_destroy_image(all.win.mlx, all.win.img);
 	mlx_hook(window.win, 2, (1L << 0), move_player, &all);
 	mlx_loop(all.manager->mlx);
 	return (0);

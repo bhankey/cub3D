@@ -26,7 +26,7 @@
 ** define scale for normal results
 */
 
-# define SCALE 32
+# define SCALE 64
 
 /*
 ** All structures
@@ -64,11 +64,12 @@ typedef struct		s_player_map
 
 typedef struct 		s_player
 {
-	float			x;
+	float 			x;
 	float			y;
 	float			dir;
-	float			start;
-	float			end;
+	float			dx;
+	float			dy;
+	float 			fov;
 }					t_player;
 
 typedef struct		s_color
