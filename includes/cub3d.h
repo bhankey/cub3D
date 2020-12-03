@@ -71,6 +71,7 @@ typedef struct 		s_player
 	float			y_step;
 	float			x_intercept;
 	float			y_intercept;
+	int 			was_hit_vertical;
 	float 			fov;
 }					t_player;
 
