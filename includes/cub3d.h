@@ -67,8 +67,10 @@ typedef struct 		s_player
 	float 			x;
 	float			y;
 	float			dir;
-	float			dx;
-	float			dy;
+	float			x_step;
+	float			y_step;
+	float			x_intercept;
+	float			y_intercept;
 	float 			fov;
 }					t_player;
 
@@ -82,9 +84,9 @@ typedef struct		s_color
 typedef struct		s_map
 {
 	char			**map;
-	int 			max_string;
 	t_player_map 	player;
-	int 			string_count;
+	int 			map_cols;
+	int 			map_rows;
 }					t_map;
 
 /*

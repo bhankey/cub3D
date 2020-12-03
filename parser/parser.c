@@ -28,7 +28,7 @@ static void	init_parser(t_parser *parser)
 	parser->ceiling_color.green = -1;
 	parser->ceiling_color.blue = -1;
 	parser->map.map = NULL;
-	parser->map.max_string = -1;
+	parser->map.map_cols = -1;
 	parser->map.player.i = -1;
 	parser->parser_flags = 0;
 }

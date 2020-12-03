@@ -29,8 +29,8 @@ static t_list		*parse_to_map(t_map *map, int fd)
 		else
 		{
 			map_started = 1;
-			if ((long long int)ft_strlen(line) > map->max_string)
-				map->max_string = ft_strlen(line);
+			if ((long long int)ft_strlen(line) > map->map_cols)
+				map->map_cols = ft_strlen(line);
 			buf = ft_lstnew(line);
 			if (buf == NULL)
 				exit_with_einval_error();
@@ -95,7 +95,7 @@ static char			**list_to_arr(t_list **list, t_map *map)
 	arr_map = ft_calloc(size + 1, sizeof(char *));
 	if (arr_map == NULL)
 		exit_with_einval_error();
-	reallocate_list(list, map->max_string, size);
+	reallocate_list(list, map->map_cols, size);
 	buf = *list;
 	i = 0;
 	while (buf)
@@ -167,8 +167,8 @@ static void			check_for_forbidden_char(t_map *map)
 
 static void			flood_fill(t_map *map, int x, int y)
 {
-	if ((x >= 0 && y >= 0 && x < map->string_count && map->map[x][y] != '\0' &&
-	(map->map[x][y] == '0' || map->map[x][y] == '2') &&
+	if ((x >= 0 && y >= 0 && x < map->map_rows && map->map[x][y] != '\0' &&
+		 (map->map[x][y] == '0' || map->map[x][y] == '2') &&
 	map->map[x][y] != ' ') || (x == map->player.i && y == map->player.j))
 	{
 		if (map->map[x][y] == '0')
@@ -180,8 +180,8 @@ static void			flood_fill(t_map *map, int x, int y)
 		flood_fill(map, x, y + 1);
 		flood_fill(map, x, y - 1);
 	}
-	else if ((x >= map->string_count || y < 0 || x < 0) ||
-	(map->map[x][y] != '1' && map->map[x][y] != '-' && map->map[x][y] != '+'))
+	else if ((x >= map->map_rows || y < 0 || x < 0) ||
+			 (map->map[x][y] != '1' && map->map[x][y] != '-' && map->map[x][y] != '+'))
 		exit_with_einval_error();
 }
 
@@ -203,9 +203,9 @@ char				**parse_and_check_map(t_map *map, int fd)
 	check_for_forbidden_char(map);
 	if (map->player.i == -1)
 		exit_with_einval_error();
-	map->string_count = 0;
-	while (map->map[map->string_count])
-		map->string_count++;
+	map->map_rows = 0;
+	while (map->map[map->map_rows])
+		map->map_rows++;
 	flood_fill_check(map);
 	return (map->map);
 }
