@@ -73,6 +73,7 @@ void 	draw_strip(t_all *all, float x, float y, float len)
 		len--;
 	}
 }
+
 void 	draw_line(t_all *all,float x, float y, float x1, float y1)
 {
 	float tmp;
@@ -144,7 +145,7 @@ void	init_player(t_player *player, t_parser *par)
 		player->dir = M_PI;
 	else
 		player->dir = 0;
-	player->fov = M_PI / 4.0f;
+	player->fov = M_PI / 3.0f;
 	player->y_step = SCALE;
 	player->x_step = SCALE;
 }
@@ -324,13 +325,15 @@ void 	render_ray(t_all *all, float distance, float ray_angle)
 	fprintf(stderr,"hor dist = %f", distance);
 }
 
-void	render_3d(t_all *all, float distance, int ray_id)
+void	render_3d(t_all *all, float distance, int ray_id, float ray_angle)
 {
 	float wall_height;
 	double dist_project;
+	float correct_dist;
 
-	dist_project = (all->parser->res.width / 2.0) / tanf(all->player->fov / 2.0f);
-	wall_height = (SCALE / distance) * dist_project;
+	correct_dist = distance * cosf(ray_angle - all->player->dir);
+	dist_project = (all->parser->res.width / 2.0) / tanf(all->player->fov / 2.0);
+	wall_height = (SCALE / correct_dist) * dist_project;
 	//draw_rect(all->manager, ray_id, (all->parser->res.height / 2) - (wall_height / 2), ray_id, wall_height);
 	draw_strip(all, ray_id, all->parser->res.height / 2.0f - wall_height / 2, wall_height);
 
@@ -352,7 +355,7 @@ void 	draw_rays(t_all *all)
 		distance = find_distance_of_ray(all, ray_angle);
 		ray_angle += all->player->fov / num_rays;
 		//render_ray(all, distance, ray_angle);
-		render_3d(all, distance, i++);
+		render_3d(all, distance, i++, ray_angle);
 	}
 }
 
