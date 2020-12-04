@@ -19,7 +19,7 @@ OBJS	=	$(SRCS:.c=.o)
 
 CC		=	clang
 
-CFLAGS	= -Wall -Wextra -Werror -I ./includes -I ./libft -I ./$(MLX_D) -I ./gnl
+CFLAGS	= -Wall -Wextra -Werror -O3 -I ./includes -I ./libft -I ./$(MLX_D) -I ./gnl
 
 ifeq ($(shell uname), Linux)
 	MLX_D = minilibx-linux
@@ -38,7 +38,7 @@ $(NAME):	$(OBJS)
 			$(MAKE) bonus -C libft
 			$(MAKE) -C 	$(MLX_D)
 			$(MLX_MAC)
-			$(CC) $(CFALGS) -o $(NAME) $(OBJS) ./libft/libft.a $(MLX) -lm
+			$(CC) $(CFALGS) -o $(NAME) $(OBJS) -O3 ./libft/libft.a $(MLX) -lm
 
 clean:
 			rm -f $(OBJS)

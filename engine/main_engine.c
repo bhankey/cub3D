@@ -41,6 +41,38 @@ void 	print_line_angle(t_window *all, float x, float y, float angle, int distanc
 	}
 }
 
+void 	draw_rect(t_window *win, int x, int y, int x1, int y1)
+{
+	int x_buf;
+
+	//fprintf(stderr, "x %d,y %d, x1 %d, y1 %d\n", x, y, x1, y1);
+	x_buf = x;
+	while (y <= y1)
+	{
+		x = x_buf;
+		while (x <= x1)
+		{
+			pixel_put(win, x++, y, 0xFFFFFF);
+		}
+		y++;
+	}
+
+}
+
+void 	draw_strip(t_all *all, float x, float y, float len)
+{
+//	fprintf(stderr, "x %f,y %f, len %d\n", x, y, len);
+	if (y < 0)
+	{
+		y = 0;
+		len = all->parser->res.height - 1;
+	}
+	while (len > 0)
+	{
+		pixel_put(all->manager, floorf(x), floorf(y++), 0xFFFFFF);
+		len--;
+	}
+}
 void 	draw_line(t_all *all,float x, float y, float x1, float y1)
 {
 	float tmp;
@@ -71,6 +103,14 @@ void 	draw_line(t_all *all,float x, float y, float x1, float y1)
 	}
 }
 
+void 	ver_line(t_all *all, float x, float start, float end)
+{
+	fprintf(stderr, "%f , %f\n", start, end);
+	while (start < end)
+	{
+		pixel_put(all->manager, x, start++, 0xFFFFFF);
+	}
+}
 void	print_map(char **map, t_window *win, int x, int y)
 {
 	int i;
@@ -104,7 +144,7 @@ void	init_player(t_player *player, t_parser *par)
 		player->dir = M_PI;
 	else
 		player->dir = 0;
-	player->fov = M_PI / 2.0f;
+	player->fov = M_PI / 4.0f;
 	player->y_step = SCALE;
 	player->x_step = SCALE;
 }
@@ -127,8 +167,8 @@ void 	draw_square(t_window *win, int x, int y, int size, int color)
 void 	draw_player(t_all *all)
 {
 	draw_square(all->manager, all->player->x, all->player->y, 32 ,0xFF0000);
-	fprintf(stderr, "\ncenter_x = %lf\n", all->player->x);
-	fprintf(stderr, "\ncenter_y = %lf\n", all->player->y);
+	//fprintf(stderr, "\ncenter_x = %lf", all->player->x);
+//	fprintf(stderr, "center_y = %lf", all->player->y);
 }
 
 float 	normalize_angle(float angle)
@@ -179,12 +219,10 @@ float	horizontal_intersection(t_all *all, float ray_angle)
 	player.x_step *= (is_ray_facing_right && player.x_step < 0) ? -1 : 1;
 	next_horizontal_touch_x = player.x_intercept;
 	next_horizontal_touch_y = player.y_intercept;
-	if (!is_ray_facing_down)
-		next_horizontal_touch_y--;
 	while (next_horizontal_touch_x >= 0 && next_horizontal_touch_x <= all->parser->map.map_cols * SCALE &&
 	next_horizontal_touch_y >= 0 && next_horizontal_touch_y <= all->parser->map.map_rows * SCALE)
 	{
-		if (is_wall_at(all, next_horizontal_touch_x, next_horizontal_touch_y - (!is_ray_facing_down ? 1.0 : 0.0)))
+		if (is_wall_at(all, next_horizontal_touch_x, next_horizontal_touch_y - (!is_ray_facing_down ? 1.0f : 0.0f)))
 		{
 			is_wall_hit = 1;
 			player.x_step = next_horizontal_touch_x;
@@ -224,12 +262,10 @@ float	vertical_intersection(t_all *all, float ray_angle)
 	player.y_step *= (is_ray_facing_down && player.y_step < 0) ? -1 : 1;
 	next_vertical_touch_x = player.x_intercept;
 	next_vertical_touch_y = player.y_intercept;
-	if (!is_ray_facing_right)
-		next_vertical_touch_x--;
 	while (next_vertical_touch_x >= 0 && next_vertical_touch_x <= all->parser->map.map_cols * SCALE &&
 		   next_vertical_touch_y >= 0 && next_vertical_touch_y <= all->parser->map.map_rows * SCALE)
 	{
-		if (is_wall_at(all, next_vertical_touch_x - (!is_ray_facing_right ? 1 : 0), next_vertical_touch_y))
+		if (is_wall_at(all, next_vertical_touch_x - (!is_ray_facing_right ? 1.0f : 0.0f), next_vertical_touch_y))
 		{
 			is_wall_hit = 1;
 			player.x_step = next_vertical_touch_x;
@@ -285,17 +321,28 @@ float	find_distance_of_ray(t_all *all, float ray_angle)
 void 	render_ray(t_all *all, float distance, float ray_angle)
 {
 	print_line_angle(all->manager, all->player->x, all->player->y, ray_angle, distance);
-//	fprintf(stderr,"hor dist = %f", distance);
+	fprintf(stderr,"hor dist = %f", distance);
+}
+
+void	render_3d(t_all *all, float distance, int ray_id)
+{
+	float wall_height;
+	double dist_project;
+
+	dist_project = (all->parser->res.width / 2.0) / tanf(all->player->fov / 2.0f);
+	wall_height = (SCALE / distance) * dist_project;
+	//draw_rect(all->manager, ray_id, (all->parser->res.height / 2) - (wall_height / 2), ray_id, wall_height);
+	draw_strip(all, ray_id, all->parser->res.height / 2.0f - wall_height / 2, wall_height);
+
+	//ver_line(all, ray_id, (all->parser->res.height / 2) - (wall_height / 2), wall_height);
 }
 
 void 	draw_rays(t_all *all)
 {
 	int num_rays;
-	int ray_id;
 	float ray_angle;
 	float distance;
 
-	ray_id = 0;
 	num_rays = all->parser->res.width;
 	ray_angle = all->player->dir - (all->player->fov / 2);
 	int i;
@@ -303,9 +350,9 @@ void 	draw_rays(t_all *all)
 	while (i < num_rays)
 	{
 		distance = find_distance_of_ray(all, ray_angle);
-		i++;
 		ray_angle += all->player->fov / num_rays;
-		render_ray(all, distance, ray_angle);
+		//render_ray(all, distance, ray_angle);
+		render_3d(all, distance, i++);
 	}
 }
 
@@ -313,8 +360,8 @@ void 	fill_and_print_image(t_all *all, t_parser *par)
 {
 	all->manager->img = mlx_new_image(all->manager->mlx, par->res.width, par->res.height);
 	all->manager->addr = mlx_get_data_addr(all->manager->img, &(all->manager->bpp), &(all->manager->line_length), &(all->manager->endian));
-	print_map(par->map.map, all->manager, 0, 0);
-	draw_player(all);
+	//print_map(par->map.map, all->manager, 0, 0);
+	//draw_player(all);
 	draw_rays(all);
 	mlx_put_image_to_window(all->manager->mlx, all->manager->win, all->manager->img, 0, 0);
 	mlx_destroy_image(all->manager->mlx, all->manager->img);
@@ -322,7 +369,7 @@ void 	fill_and_print_image(t_all *all, t_parser *par)
 
 int		move_player(int keycode, t_all *all)
 {
-	fprintf(stderr, "%d\n", keycode);
+//	fprintf(stderr, "%d\n", keycode);
 	if (keycode == 65361)
 		all->player->dir -= 0.05f;
 	else if (keycode == 65363)

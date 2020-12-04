@@ -5,7 +5,7 @@ F 255,153,51
 EA textures/brick.xpm
 S  textures/jojo.xpm
 
-R 1920 1080
+R 600 600
 
 C 0,0,153
 
