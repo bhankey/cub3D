@@ -80,6 +80,7 @@ typedef struct		s_color
 	int				red;
 	int				green;
 	int				blue;
+	int 			rgb;
 }					t_color;
 
 typedef struct		s_map
@@ -90,6 +91,11 @@ typedef struct		s_map
 	int 			map_rows;
 }					t_map;
 
+typedef struct		s_texture
+{
+	char			*texture;
+	void 			*img;
+}					t_texture;
 /*
 ** parser_flag
 ** 00000000 - nothing parsed
@@ -143,5 +149,29 @@ void				exit_with_einval_error(void);
 */
 
 int					engine(t_parser *par);
+void 				pixel_put(t_window *data, int x, int y, int color);
+
+/*
+** Draw functions
+*/
+
+
+void				line_dda(t_all *all, float x1, float y1, float x2,
+					float y2, int color);
+void				pixel_put(t_window *data, int x, int y, int color);
+
+/*
+** Find distance functions
+*/
+
+float				find_distance_of_ray(t_all *all, float ray_angle);
+int					is_wall_at(t_all *all, float x, float y);a
+
+/*
+** extra functions
+*/
+
+void 				print_upscale(t_window *win, float x, float y, int color);
+void				print_map(char **map, t_window *win, int x, int y);
 
 #endif

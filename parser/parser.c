@@ -110,5 +110,15 @@ int			parser(t_parser *parser, char *file_name)
 		exit(EXIT_FAILURE);
 	}
 	parse_all_stuff(parser, fd);
+	parser->ceiling_color.rgb = parser->ceiling_color.red;
+	parser->ceiling_color.rgb = (parser->ceiling_color.rgb << 8) +
+			parser->ceiling_color.green;
+	parser->ceiling_color.rgb = (parser->ceiling_color.rgb << 8) +
+								parser->ceiling_color.blue;
+	parser->floor_color.rgb = parser->floor_color.red;
+	parser->floor_color.rgb = (parser->floor_color.rgb << 8) +
+								parser->floor_color.green;
+	parser->floor_color.rgb = (parser->floor_color.rgb << 8) +
+								parser->floor_color.blue;
 	return (0);
 }

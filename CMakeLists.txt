@@ -10,6 +10,6 @@ add_executable(cub3D main.c parser/parse_map.c parser/parser.c parser/parser_ide
         libft/ft_isspace.c libft/ft_isalpha.c gnl/get_next_line_utils.c
         libft/ft_lstnew.c libft/ft_lstadd_back.c libft/ft_calloc.c libft/ft_lstclear.c
         libft/ft_lstdelone.c libft/ft_strlen.c libft/ft_bzero.c libft/ft_lstsize.c libft/ft_memset.c
-        utilits/different_utils.c utilits/list_utilits.c engine/main_engine.c)
+        utilits/different_utils.c utilits/list_utilits.c engine/main_engine.c engine/distance.c engine/draw.c engine/pixel_put.c engine/extra_functions.c )
 #target_link_libraries(cub3D ./home/sergey/Documents/school_21/cub3D/libft/libft.a)
 target_link_libraries(cub3D libft/libft.a)
