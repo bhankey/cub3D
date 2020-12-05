@@ -165,7 +165,7 @@ void				pixel_put(t_window *data, int x, int y, int color);
 */
 
 float				find_distance_of_ray(t_all *all, float ray_angle);
-int					is_wall_at(t_all *all, float x, float y);a
+int					is_wall_at(t_all *all, float x, float y);
 
 /*
 ** extra functions
