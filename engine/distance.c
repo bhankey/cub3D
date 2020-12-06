@@ -16,7 +16,7 @@ int		is_wall_at(t_all *all, float x, float y)
 			all->parser->map.map[map_y][map_x] == '\0');
 }
 
-float 	normalize_angle(float angle)
+float	normalize_angle(float angle)
 {
 	if (angle < 0)
 		angle += (float)(2.0 * M_PI);
@@ -28,87 +28,81 @@ float 	normalize_angle(float angle)
 float	horizontal_intersection(t_all *all, float ray_angle)
 {
 	t_player	player;
-	int 		is_ray_facing_down;
-	int 		is_ray_facing_right;
-	float		next_horizontal_touch_x;
-	float		next_horizontal_touch_y;
-	int			is_wall_hit;
+	int			is_ray_down;
+	int			is_ray_facing_right;
+	float		n_t_x;
+	float		n_t_y;
 
-	is_wall_hit = 0;
+	all->player->is_wall_hit = 0;
 	ray_angle = normalize_angle(ray_angle);
-	is_ray_facing_down = ray_angle > 0 && ray_angle < M_PI;
+	is_ray_down = ray_angle > 0 && ray_angle < M_PI;
 	is_ray_facing_right = ray_angle < M_PI / 2 || ray_angle > 1.5 * M_PI;
 	player = *(all->player);
 	player.y_step = SCALE;
 	player.x_step = SCALE / tanf(ray_angle);
-	player.y_intercept = ((int)((player.y / SCALE))) * SCALE;
-	player.y_intercept += is_ray_facing_down ? SCALE : 0;
-	player.x_intercept = player.x + (player.y_intercept - player.y) / tanf(ray_angle);
-	player.y_step *= (!is_ray_facing_down) ? -1 : 1;
+	player.y_inter = ((int)((player.y / SCALE))) * SCALE;
+	player.y_inter += is_ray_down ? SCALE : 0;
+	player.x_inter = player.x + (player.y_inter - player.y) / tanf(ray_angle);
+	player.y_step *= (!is_ray_down) ? -1 : 1;
 	player.x_step *= (!is_ray_facing_right && player.x_step > 0) ? -1 : 1;
 	player.x_step *= (is_ray_facing_right && player.x_step < 0) ? -1 : 1;
-	next_horizontal_touch_x = player.x_intercept;
-	next_horizontal_touch_y = player.y_intercept;
-	while (next_horizontal_touch_x >= 0 && next_horizontal_touch_x <= all->parser->map.map_cols * SCALE &&
-		   next_horizontal_touch_y >= 0 && next_horizontal_touch_y <= all->parser->map.map_rows * SCALE)
-	{
-		if (is_wall_at(all, next_horizontal_touch_x, next_horizontal_touch_y - (!is_ray_facing_down ? 1.0f : 0.0f)))
+	n_t_x = player.x_inter;
+	n_t_y = player.y_inter;
+	while (n_t_x >= 0 && n_t_x <= all->parser->map.map_cols * SCALE &&
+		n_t_y >= 0 && n_t_y <= all->parser->map.map_rows * SCALE)
+		if (is_wall_at(all, n_t_x, n_t_y - (!is_ray_down ? 1.0f : 0.0f)))
 		{
-			is_wall_hit = 1;
-			player.x_step = next_horizontal_touch_x;
-			player.y_step = next_horizontal_touch_y;
-			break;
+			all->player->x_wall_meet = n_t_x;
+			all->player->is_wall_hit = 1;
+			break ;
 		}
 		else
 		{
-			next_horizontal_touch_x += player.x_step;
-			next_horizontal_touch_y += player.y_step;
+			n_t_x += player.x_step;
+			n_t_y += player.y_step;
 		}
-	}
-	return (is_wall_hit == 1 ? sqrtf((player.x_step - player.x) * (player.x_step - player.x) + (player.y_step - player.y) * (player.y_step - player.y)) : -1.0f);
+	return (all->player->is_wall_hit == 1 ? sqrtf(powf((n_t_x - player.x),
+		2) + powf((n_t_y - player.y), 2)) : -1.0f);
 }
 
-float	vertical_intersection(t_all *all, float ray_angle)
+float	vertical_intersection(t_all *all, float angle)
 {
 	t_player	player;
-	int 		is_ray_facing_down;
-	int 		is_ray_facing_right;
-	float		next_vertical_touch_x;
-	float		next_vertical_touch_y;
-	int			is_wall_hit;
+	int			is_ray_facing_down;
+	int			is_ray_right;
+	float		n_t_x;
+	float		n_t_y;
 
-	is_wall_hit = 0;
-	ray_angle = normalize_angle(ray_angle);
-	is_ray_facing_down = ray_angle > 0 && ray_angle < M_PI;
-	is_ray_facing_right = ray_angle < M_PI / 2 || ray_angle > 1.5 * M_PI;
+	all->player->is_wall_hit = 0;
+	angle = normalize_angle(angle);
+	is_ray_facing_down = angle > 0 && angle < M_PI;
+	is_ray_right = angle < M_PI / 2 || angle > 1.5 * M_PI;
 	player = *(all->player);
 	player.x_step = SCALE;
-	player.y_step = SCALE * tanf(ray_angle);
-	player.x_intercept = ((int)((player.x / SCALE))) * SCALE;
-	player.x_intercept += is_ray_facing_right ? SCALE : 0;
-	player.y_intercept = player.y + (player.x_intercept - player.x) * tanf(ray_angle);
-	player.x_step *= (!is_ray_facing_right) ? -1 : 1;
+	player.y_step = SCALE * tanf(angle);
+	player.x_inter = ((int)((player.x / SCALE))) * SCALE;
+	player.x_inter += is_ray_right ? SCALE : 0;
+	player.y_inter = player.y + (player.x_inter - player.x) * tanf(angle);
+	player.x_step *= (!is_ray_right) ? -1 : 1;
 	player.y_step *= (!is_ray_facing_down && player.y_step > 0) ? -1 : 1;
 	player.y_step *= (is_ray_facing_down && player.y_step < 0) ? -1 : 1;
-	next_vertical_touch_x = player.x_intercept;
-	next_vertical_touch_y = player.y_intercept;
-	while (next_vertical_touch_x >= 0 && next_vertical_touch_x <= all->parser->map.map_cols * SCALE &&
-		   next_vertical_touch_y >= 0 && next_vertical_touch_y <= all->parser->map.map_rows * SCALE)
-	{
-		if (is_wall_at(all, next_vertical_touch_x - (!is_ray_facing_right ? 1.0f : 0.0f), next_vertical_touch_y))
+	n_t_x = player.x_inter;
+	n_t_y = player.y_inter;
+	while (n_t_x >= 0 && n_t_x <= all->parser->map.map_cols * SCALE &&
+		n_t_y >= 0 && n_t_y <= all->parser->map.map_rows * SCALE)
+		if (is_wall_at(all, n_t_x - (!is_ray_right ? 1.0f : 0.0f), n_t_y))
 		{
-			is_wall_hit = 1;
-			player.x_step = next_vertical_touch_x;
-			player.y_step = next_vertical_touch_y;
-			break;
+			all->player->is_wall_hit = 1;
+			all->player->y_wall_meet = n_t_y;
+			break ;
 		}
 		else
 		{
-			next_vertical_touch_x += player.x_step;
-			next_vertical_touch_y += player.y_step;
+			n_t_x += player.x_step;
+			n_t_y += player.y_step;
 		}
-	}
-	return (is_wall_hit == 1 ? sqrtf((player.x_step - player.x) * (player.x_step - player.x) + (player.y_step - player.y) * (player.y_step - player.y)) : -1.0f);
+	return (all->player->is_wall_hit == 1 ? sqrtf(powf((n_t_x - player.x),
+				2) + powf((n_t_y - player.y), 2)) : -1.0f);
 }
 
 float	find_distance_of_ray(t_all *all, float ray_angle)

@@ -16,11 +16,11 @@ static void	init_parser(t_parser *parser)
 {
 	parser->res.width = -1;
 	parser->res.height = -1;
-	parser->north_texture = "";
-	parser->south_texture = "";
-	parser->west_texture = "";
-	parser->east_texture = "";
-	parser->sprite_texture = "";
+	parser->north_texture.path = NULL;
+	parser->south_texture.path = NULL;
+	parser->west_texture.path = NULL;
+	parser->east_texture.path = NULL;
+	parser->sprite_texture.path = NULL;
 	parser->floor_color.red = -1;
 	parser->floor_color.green = -1;
 	parser->floor_color.blue = -1;

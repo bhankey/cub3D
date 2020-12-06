@@ -34,20 +34,20 @@
 
 typedef struct		s_point
 {
-	int				x;
-	int				y;
+	float 			x;
+	float 			y;
 }					t_point;
 
-typedef struct	s_window
+typedef struct		s_window
 {
-	void		*mlx;
-	void		*win;
-	void		*img;
-	void		*addr;
-	int			line_length;
-	int			bpp;
-	int			endian;
-}				t_window;
+	void			*mlx;
+	void			*win;
+	void			*img;
+	void			*addr;
+	int				line_length;
+	int				bpp;
+	int				endian;
+}					t_window;
 
 typedef struct		s_resolution
 {
@@ -69,10 +69,13 @@ typedef struct 		s_player
 	float			dir;
 	float			x_step;
 	float			y_step;
-	float			x_intercept;
-	float			y_intercept;
-	int 			was_hit_vertical;
+	float			x_inter;
+	float			y_inter;
+	float 			x_wall_meet;
+	float 			y_wall_meet;
 	float 			fov;
+	int 			was_hit_vertical;
+	int 			is_wall_hit;
 }					t_player;
 
 typedef struct		s_color
@@ -93,8 +96,12 @@ typedef struct		s_map
 
 typedef struct		s_texture
 {
-	char			*texture;
+	char			*path;
 	void 			*img;
+	char			*addr;
+	int				line_length;
+	int				bpp;
+	int				endian;
 }					t_texture;
 /*
 ** parser_flag
@@ -113,11 +120,11 @@ typedef struct		s_parser
 {
 	unsigned char 	parser_flags;
 	t_resolution	res;
-	char			*north_texture;
-	char			*south_texture;
-	char			*west_texture;
-	char			*east_texture;
-	char			*sprite_texture;
+	t_texture 		north_texture;
+	t_texture 		south_texture;
+	t_texture 		west_texture;
+	t_texture 		east_texture;
+	t_texture		sprite_texture;
 	t_color			floor_color;
 	t_color			ceiling_color;
 	t_map 			map;
@@ -133,9 +140,7 @@ typedef struct		s_all
 ** Parser
 */
 
-char				*parser_identifiers(t_parser *parser, int fd);
 int					parser(t_parser *parser, char *file_name);
-t_list				*parse_in_list(t_list **list, int fd);
 void				remove_str(void *content);
 void				parse_resolution(t_parser *parser,char *line);
 void				parse_texture(t_parser *parser,char *line);
@@ -156,8 +161,9 @@ void 				pixel_put(t_window *data, int x, int y, int color);
 */
 
 
-void				line_dda(t_all *all, float x1, float y1, float x2,
-					float y2, int color);
+void	line_dda(t_all *all, float x1, float y1, float x2, float y2, int color);
+void 				draw_line(t_all *all, int x1, int y1, int x2,
+				   int y2, int color);
 void				pixel_put(t_window *data, int x, int y, int color);
 
 /*
@@ -173,5 +179,6 @@ int					is_wall_at(t_all *all, float x, float y);
 
 void 				print_upscale(t_window *win, float x, float y, int color);
 void				print_map(char **map, t_window *win, int x, int y);
+float	normalize_angle(float angle);
 
 #endif

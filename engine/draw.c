@@ -22,7 +22,7 @@ void 	draw_strip(t_all *all, float x, float y, float len)
 		pixel_put(all->manager, floorf(x), floorf(y++), all->parser->floor_color.rgb);
 }
 
-void 	draw_line(t_all *all, int x1, int y1, int x2, int y2)
+void 	draw_line(t_all *all, int x1, int y1, int x2, int y2, int color)
 {
 	if (y1 < 0)
 	{
@@ -36,10 +36,10 @@ void 	draw_line(t_all *all, int x1, int y1, int x2, int y2)
 	int singy = y1 < y2 ? 1 : -1;
 	int error = dx - dy;
 
-	pixel_put(all->manager, x2, y2, 0xFFFFFF);
+	pixel_put(all->manager, x2, y2, color);
 	while (x1 != x2 || y1 != y2)
 	{
-		pixel_put(all->manager, x1, y1, 0xFFFFFF);
+		pixel_put(all->manager, x1, y1, color);
 		int error2 = error * 2;
 		if (error2 > -dy)
 		{
@@ -90,16 +90,5 @@ void	line_dda(t_all *all, float x1, float y1, float x2, float y2, int color)
 		x += dX;
 		y += dY;
 		pixel_put(all->manager, roundf(x), roundf(y), color);
-	}
-}
-
-void 	print_line_angle(t_window *all, float x, float y, float angle, int distance)
-{
-	while (distance > 0)
-	{
-		pixel_put(all, x, y, 0x00FF00);
-		x += cosf(angle);
-		y += sinf(angle);
-		distance--;
 	}
 }
