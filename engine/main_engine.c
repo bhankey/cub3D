@@ -20,7 +20,6 @@ void	init_player(t_player *player, t_parser *par)
 	player->x_step = SCALE;
 }
 
-
 void 	print_texture_horizontal(t_all *all, t_texture *texture, float y_start,
 						float wall_height, int x)
 {
@@ -31,6 +30,8 @@ void 	print_texture_horizontal(t_all *all, t_texture *texture, float y_start,
 	int			touch_dot;
 
 	touch_dot = (int)all->player->x_wall_meet & 0x3F;
+	if ((int)wall_height % 2 == 1)
+		wall_height++;
 	y_text = (y_start - all->parser->res.height / 2 + wall_height / 2) *
 			(SCALE / wall_height);
 	y_end = y_start + wall_height;
@@ -58,6 +59,8 @@ void 	print_texture_vertical(t_all *all, t_texture *texture, float y_start,
 	int			touch_dot;
 
 	touch_dot = (int)all->player->y_wall_meet & 0x3F;
+	if ((int)wall_height % 2 == 1)
+		wall_height++;
 	y_text = (y_start - all->parser->res.height / 2 + wall_height / 2) *
 			(SCALE / wall_height);
 	y_end = y_start + wall_height;
@@ -93,28 +96,15 @@ void 	print_wall(t_all *all, int x, float y_start, float wall_height, float angl
 	is_facing_right = angle < M_PI / 2 || angle > 1.5 * M_PI;
 	is_facing_down = angle > 0 && angle < M_PI;
 	if (all->player->was_hit_vertical == 1)
-	{
 		if (is_facing_right)
-		{
 			print_texture_vertical(all, &(all->parser->east_texture), y_start, wall_height, x);
-		}
 		else
-		{
 			print_texture_vertical(all, &(all->parser->west_texture), y_start, wall_height, x);
-		}
-	}
 	else
-	{
-
 		if (is_facing_down)
-		{
 			print_texture_horizontal(all, &(all->parser->south_texture), y_start, wall_height, x);
-		}
 		else
-		{
 			print_texture_horizontal(all, &(all->parser->north_texture), y_start, wall_height, x);
-		}
-	}
 }
 
 void	render_3d(t_all *all, float distance, int ray_id, float ray_angle)
@@ -131,33 +121,155 @@ void	render_3d(t_all *all, float distance, int ray_id, float ray_angle)
 			 all->parser->ceiling_color.rgb);
 	print_wall(all, ray_id, (all->parser->res.height / 2) - (wall_height / 2), wall_height, ray_angle);
 	line_dda(all, ray_id,
-			 (all->parser->res.height / 2) - (wall_height / 2) + wall_height,
+			 (all->parser->res.height / 2) + (wall_height / 2),
 			 ray_id, all->parser->res.height, all->parser->floor_color.rgb);
 }
 
-void 	draw_rays(t_all *all)
+// Начало дичи
+void 	sort_spites(t_all *all, int start, int end)
 {
-	int num_rays;
-	float ray_angle;
-	float distance;
+	int			left;
+	int			right;
+	float		piv;
+	t_sprites	*sprites;
+	t_sprites 	tmp;
+
+	left = start;
+	right = end;
+	sprites = all->sprites;
+	piv = sprites[(left + right) / 2].distance;
+	if (start < end)
+	{
+		while (left <= right)
+		{
+			while (sprites[left].distance < piv)
+				left++;
+			while (sprites[right].distance > piv)
+				right--;
+			if (left <= right)
+			{
+				tmp = sprites[left];
+				sprites[left++] = sprites[right];
+				sprites[right--] = tmp;
+			}
+		}
+		sort_spites(all, start, right);
+		sort_spites(all, left, end);
+	}
+}
+
+void 	find_angle_b_sprite_and_player(t_all *all)
+{
+	int i;
+
+	i = 0;
+	while (i < all->parser->map.sprites_count)
+	{
+		all->sprites[i].sprite_dir =
+				atan2f((float) all->sprites[i].y - all->player->y,
+		   (float) all->sprites[i].x - all->player->x) - all->player->dir;
+		all->sprites[i].sprite_dir += M_PI / 6.0;
+		all->sprites[i].sprite_dir = normalize_angle(all->sprites[i].sprite_dir);
+		i++;
+	}
+}
+
+void 	find_distance_b_sprite_and_player(t_all *all)
+{
+	int i;
+
+	i = 0;
+	while (i < all->parser->map.sprites_count)
+	{
+		all->sprites[i].distance = sqrtf(powf(all->player->x -
+											(float) all->sprites[i].x, 2) +
+									   powf(all->player->y -
+											(float) all->sprites[i].y, 2));
+		i++;
+	}
+}
+
+int 	is_sprite_visable(t_all *all, int i)
+{
+	if (all->sprites[i].sprite_dir <= M_PI / 3.0)
+		return (1);
+	return (0);
+}
+
+void 	print_sprite_texture(t_all *all, float sprite_height, float x_offset, float y_offset)
+{
+	for (int i = y_offset; i < y_offset + sprite_height; i++)
+	{
+		for (int j = x_offset; j < x_offset + sprite_height; j++)
+		{
+			if (j > all->parser->res.width)
+				continue;
+			pixel_put(all->manager, j, i, 0x0);
+		}
+	}
+}
+
+void 	draw_sprites(t_all *all)
+{
+	int i;
+	float x_place;
+	float y_place;
+	float sprite_height;
+	float pix_p_degree;
+	float dist_project;
+
+	dist_project = ((all->parser->res.width / 2.0) / tanf(all->player->fov / 2.0));
+	i = 0;
+	pix_p_degree = all->parser->res.width / all->player->fov;
+	while (i < all->parser->map.sprites_count)
+	{
+		x_place = pix_p_degree *  all->sprites[i].sprite_dir;
+		sprite_height = dist_project * (SCALE / all->sprites[i].distance);
+		y_place = all->parser->res.height / 2.0 - sprite_height / 2.0;
+		fprintf(stderr, "dist %f x_place %f, y_place %f, height %f\n", all->sprites[i].distance ,x_place, y_place, sprite_height);
+		if (is_sprite_visable(all, i))
+			print_sprite_texture(all, sprite_height, x_place, y_place);
+		i++;
+	}
+}
+
+void	render_sprites(t_all *all)
+{
+	find_angle_b_sprite_and_player(all);
+	find_distance_b_sprite_and_player(all);
+	sort_spites(all, 0, all->parser->map.sprites_count - 1);
+	draw_sprites(all);
+}
+
+// Окончание дичи
+void 	render_all(t_all *all)
+{
+	int		num_rays;
+	float	ray_angle;
+	float	distance;
+	int		i;
 
 	num_rays = all->parser->res.width;
+	all->rays_distance = calloc(num_rays, sizeof(float));
 	ray_angle = all->player->dir - (all->player->fov / 2);
-	int i;
 	i = 0;
 	while (i < num_rays)
 	{
 		distance = find_distance_of_ray(all, ray_angle);
+		all->rays_distance[i] = distance;
 		ray_angle += all->player->fov / num_rays;
 		render_3d(all, distance, i++, ray_angle);
 	}
+	render_sprites(all);
+	free(all->rays_distance);
+	all->rays_distance = NULL;
 }
 
-void 	fill_and_print_image(t_all *all, t_parser *par)
+void 	update_screen(t_all *all, t_parser *par)
 {
 	all->manager->img = mlx_new_image(all->manager->mlx, par->res.width, par->res.height);
 	all->manager->addr = mlx_get_data_addr(all->manager->img, &(all->manager->bpp), &(all->manager->line_length), &(all->manager->endian));
-	draw_rays(all);
+	render_all(all);
 	mlx_put_image_to_window(all->manager->mlx, all->manager->win, all->manager->img, 0, 0);
 	mlx_destroy_image(all->manager->mlx, all->manager->img);
 }
@@ -193,7 +305,7 @@ int		move_player(int keycode, t_all *all)
 		all->player->dir += (float)(2 * M_PI);
 	else if (all->player->dir > 2.0f * M_PI)
 		all->player->dir -= (float)(2 * M_PI);
-	fill_and_print_image(all, all->parser);
+	update_screen(all, all->parser);
 	return (1);
 }
 
@@ -226,6 +338,69 @@ void	init_textures(t_all *all)
 		exit_with_error_print();
 }
 
+void 	shrink_spites_array(t_all *all)
+{
+	int count;
+	t_sprites *new;
+	int i;
+	int j;
+
+	i = 0;
+	count = 0;
+	while (i < all->parser->map.sprites_count)
+	{
+		if (all->sprites[i].x != 0)
+			count++;
+		i++;
+	}
+	new = calloc(count, sizeof(t_sprites));
+	i = 0;
+	j = 0;
+	while (i < all->parser->map.sprites_count)
+	{
+		if (all->sprites[i].x != 0)
+			new[j++] = all->sprites[i];
+		i++;
+	}
+	free(all->sprites);
+	all->sprites = new;
+	all->parser->map.sprites_count = count;
+}
+
+void 	init_sprites(t_all *all)
+{
+	int i;
+	int j;
+	int s_count;
+
+	s_count = 0;
+	if (all->parser->map.sprites_count > 0)
+	{
+		all->sprites = ft_calloc(all->parser->map.sprites_count,
+								 sizeof(t_sprites));
+		if (all->sprites == NULL)
+			exit_with_error_print();
+		i = 0;
+		while (all->parser->map.map[i] != NULL)
+		{
+			j = 0;
+			while (all->parser->map.map[i][j] != '\0')
+			{
+				if (all->parser->map.map[i][j] == '+')
+				{
+					all->sprites[s_count].x = j * SCALE + SCALE / 2;
+					all->sprites[s_count++].y = i * SCALE + SCALE / 2;
+				}
+				j++;
+			}
+			i++;
+		}
+		shrink_spites_array(all);
+	}
+	else
+		all->sprites = NULL;
+}
+
 int		engine(t_parser *par)
 {
 	t_all	all;
@@ -237,9 +412,10 @@ int		engine(t_parser *par)
 	all.parser = par;
 	all.manager->mlx = mlx_init();
 	init_textures(&all);
+	init_sprites(&all);
 	init_player(all.player, par);
 	all.manager->win = mlx_new_window(all.manager->mlx, par->res.width, par->res.height, "cub3D");
-	fill_and_print_image(&all, par);
+	update_screen(&all, par);
 	mlx_hook(window.win, 2, (1L << 0), move_player, &all);
 	mlx_loop(all.manager->mlx);
 	return (0);

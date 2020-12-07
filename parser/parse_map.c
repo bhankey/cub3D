@@ -109,9 +109,12 @@ static char			**list_to_arr(t_list **list, t_map *map)
 	return (arr_map);
 }
 
-static int			check_for_forbidden_helper(char ch, int i)
+static int			check_for_forbidden_helper(char ch, t_map *map)
 {
-	if ((ch == 'N' || ch == 'S' || ch == 'W' || ch == 'E') && i == -1)
+	if (ch == '2')
+		map->sprites_count++;
+	if ((ch == 'N' || ch == 'S' || ch == 'W' || ch == 'E')
+	&& map->player.i == -1)
 		return (1);
 	return (0);
 }
@@ -155,7 +158,7 @@ static void			check_for_forbidden_char(t_map *map)
 		}
 		else
 			while (arr_map[i][j] != '\0')
-				if (check_for_forbidden_helper(arr_map[i][j], map->player.i))
+				if (check_for_forbidden_helper(arr_map[i][j], map))
 					check_for_forbidden_helper_v2(map, i, &j, arr_map[i][j]);
 				else if (check_for_forbidden_helper_v3(arr_map[i][j]))
 					j++;

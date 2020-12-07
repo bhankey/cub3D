@@ -38,6 +38,17 @@ typedef struct		s_point
 	float 			y;
 }					t_point;
 
+typedef struct 		s_sprites
+{
+	int				x;
+	int 			y;
+	float 			distance;
+	float 			sprite_dir;
+	float 			size;
+	float 			x_pos;
+	float 			y_pos;
+}					t_sprites;
+
 typedef struct		s_window
 {
 	void			*mlx;
@@ -92,6 +103,7 @@ typedef struct		s_map
 	t_player_map 	player;
 	int 			map_cols;
 	int 			map_rows;
+	int 			sprites_count;
 }					t_map;
 
 typedef struct		s_texture
@@ -135,6 +147,8 @@ typedef struct		s_all
 	t_window		*manager;
 	t_player		*player;
 	t_parser		*parser;
+	t_sprites		*sprites;
+	float 			*rays_distance;
 }					t_all;
 /*
 ** Parser
@@ -179,6 +193,6 @@ int					is_wall_at(t_all *all, float x, float y);
 
 void 				print_upscale(t_window *win, float x, float y, int color);
 void				print_map(char **map, t_window *win, int x, int y);
-float	normalize_angle(float angle);
+float				normalize_angle(float angle);
 
 #endif

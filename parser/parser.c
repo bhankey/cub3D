@@ -31,6 +31,7 @@ static void	init_parser(t_parser *parser)
 	parser->map.map_cols = -1;
 	parser->map.player.i = -1;
 	parser->parser_flags = 0;
+	parser->map.sprites_count = 0;
 }
 
 static void	parse_parameters(t_parser *parser, char *line)
