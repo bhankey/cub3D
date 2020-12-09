@@ -40,13 +40,11 @@ typedef struct		s_point
 
 typedef struct 		s_sprites
 {
-	int				x;
-	int 			y;
+	float			x;
+	float 			y;
 	float 			distance;
 	float 			sprite_dir;
 	float 			size;
-	float 			x_pos;
-	float 			y_pos;
 }					t_sprites;
 
 typedef struct		s_window
@@ -175,7 +173,7 @@ void 				pixel_put(t_window *data, int x, int y, int color);
 */
 
 
-void	line_dda(t_all *all, float x1, float y1, float x2, float y2, int color);
+void				line_dda(t_all *all, float x1, float y1, float x2, float y2, int color);
 void 				draw_line(t_all *all, int x1, int y1, int x2,
 				   int y2, int color);
 void				pixel_put(t_window *data, int x, int y, int color);
