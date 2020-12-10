@@ -23,7 +23,7 @@
 # include <math.h>
 
 /*
-** define scale for normal results
+** define size of one block
 */
 
 # define SCALE 64
@@ -101,7 +101,7 @@ typedef struct		s_map
 	t_player_map 	player;
 	int 			map_cols;
 	int 			map_rows;
-	int 			sprites_count;
+	int 			s_count;
 }					t_map;
 
 typedef struct		s_texture
@@ -148,6 +148,9 @@ typedef struct		s_all
 	t_sprites		*sprites;
 	float 			*rays_distance;
 }					t_all;
+
+t_point				make_point(float x, float y);
+
 /*
 ** Parser
 */
@@ -172,11 +175,11 @@ void 				pixel_put(t_window *data, int x, int y, int color);
 ** Draw functions
 */
 
-
-void				line_dda(t_all *all, float x1, float y1, float x2, float y2, int color);
-void 				draw_line(t_all *all, int x1, int y1, int x2,
-				   int y2, int color);
+void				render_3d(t_all *all, float distance, int ray_id, float ray_angle);
+void				line_dda(t_all *all, t_point one, t_point second,
+					int color);
 void				pixel_put(t_window *data, int x, int y, int color);
+void				update_screen(t_all *all, t_parser *par);
 
 /*
 ** Find distance functions
@@ -184,13 +187,38 @@ void				pixel_put(t_window *data, int x, int y, int color);
 
 float				find_distance_of_ray(t_all *all, float ray_angle);
 int					is_wall_at(t_all *all, float x, float y);
+float				normalize_angle(float angle);
+void				intersection_help(t_player *player, float  *n_t_x,
+						  float *n_t_y);
 
 /*
-** extra functions
+** init functions
 */
 
-void 				print_upscale(t_window *win, float x, float y, int color);
-void				print_map(char **map, t_window *win, int x, int y);
-float				normalize_angle(float angle);
+void				init_textures(t_all *all);
+
+/*
+** exit functions
+*/
+
+void 				exit_when_all_good(t_all *all, int error_code);
+
+/*
+** Sprite functions
+*/
+
+void				find_distance_b_sprite_and_player(t_all *all);
+int					is_sprite_in_fov(t_sprites *sprite);
+void				find_angle_b_sprite_and_player(t_all *all);
+void				sort_spites(t_all *all, int start, int end);
+void				init_sprites(t_all *all);
+void				render_sprites(t_all *all);
+
+/*
+** Player functions
+*/
+
+void				init_player(t_player *player, t_parser *par);
+int					move_player(int keycode, t_all *all);
 
 #endif

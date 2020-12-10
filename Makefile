@@ -12,7 +12,11 @@
 
 SRCS	=	main.c parser/parse_map.c parser/parser.c parser/parser_identifiers.c utilits/list_utilits.c \
  			utilits/different_utils.c gnl/get_next_line.c gnl/get_next_line_utils.c engine/main_engine.c \
- 			engine/draw.c engine/distance.c engine/pixel_put.c
+ 			engine/walls/draw.c engine/walls/distance_to_wall.c engine/utils/pixel_put.c engine/textures/init_textures.c \
+ 			engine/utils/exit_functions.c engine/walls/wall_functions.c engine/walls/render_wall.c \
+ 			engine/sprites/sprite_render.c engine/sprites/sprite_init.c engine/sprites/sprite_helper_to_print.c \
+ 			engine/player/player.c engine/walls/distance_to_wall_second.c gnl/get_next_line_utils_s.c \
+
 
 NAME	=	cub3D
 

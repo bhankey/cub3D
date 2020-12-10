@@ -112,7 +112,7 @@ static char			**list_to_arr(t_list **list, t_map *map)
 static int			check_for_forbidden_helper(char ch, t_map *map)
 {
 	if (ch == '2')
-		map->sprites_count++;
+		map->s_count++;
 	if ((ch == 'N' || ch == 'S' || ch == 'W' || ch == 'E')
 	&& map->player.i == -1)
 		return (1);
@@ -202,6 +202,8 @@ char				**parse_and_check_map(t_map *map, int fd)
 	t_list	*l_map;
 
 	l_map = parse_to_map(map, fd);
+	if (l_map == NULL)
+		exit_with_einval_error();
 	map->map = list_to_arr(&l_map, map);
 	check_for_forbidden_char(map);
 	if (map->player.i == -1)

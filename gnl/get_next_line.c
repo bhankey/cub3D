@@ -27,8 +27,7 @@ int		string_realloc(t_line *string)
 		string->line = (char *)malloc(string->capacity);
 		if (string->line == NULL)
 			return (helper_for_alloc(string));
-		string->line[0] = '\0';
-		return (0);
+		return (string_helper(string));
 	}
 	tmp = string->line;
 	string->line = (char *)malloc(string->capacity * 2);
@@ -47,13 +46,6 @@ int		string_realloc(t_line *string)
 	return (0);
 }
 
-/*
-** Прочитали из потока все в баффер(в потоке больше нет символов) - "2"
-**В потоке еще есть символы, а баффер мы заполнили				  - "1"
-**Из потока нечего брать(Значит в string должна быть строка(EOF)) - "0"
-**Ошибка и fd не существует 								      - "-1"
-*/
-
 int		gnl_r(int fd, t_buf *buffer)
 {
 	int bites;
@@ -67,12 +59,6 @@ int		gnl_r(int fd, t_buf *buffer)
 		return (2);
 	return (1);
 }
-
-/*
-** был в бафере /n и в string полноценная строка - "0"
-** в бафере не было /n и нужно еще раз прочитать из потока в бафер - "1"
-** Ошибка маллока - "-1"
-*/
 
 int		string_buf(t_buf *buffer, t_line *string)
 {

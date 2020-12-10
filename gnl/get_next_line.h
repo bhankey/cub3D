@@ -40,5 +40,6 @@ int				get_next_line(int fd, char **line);
 size_t			ft_strlcat_gnl(char *dst, const char *src);
 int				n_func(char **line, t_buf *buf);
 int				helper_for_a_func(t_buf *buf, char *str);
+int				string_helper(t_line *string);
 
 #endif

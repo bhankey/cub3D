@@ -12,15 +12,21 @@
 
 #include "cub3d.h"
 
+static void init_text(t_texture *tex)
+{
+	tex->img = NULL;
+	tex->addr = NULL;
+	tex->path = NULL;
+}
 static void	init_parser(t_parser *parser)
 {
 	parser->res.width = -1;
 	parser->res.height = -1;
-	parser->north_texture.path = NULL;
-	parser->south_texture.path = NULL;
-	parser->west_texture.path = NULL;
-	parser->east_texture.path = NULL;
-	parser->sprite_texture.path = NULL;
+	init_text(&(parser->north_texture));
+	init_text(&(parser->sprite_texture));
+	init_text(&(parser->west_texture));
+	init_text(&(parser->east_texture));
+	init_text(&(parser->south_texture));
 	parser->floor_color.red = -1;
 	parser->floor_color.green = -1;
 	parser->floor_color.blue = -1;
@@ -31,7 +37,7 @@ static void	init_parser(t_parser *parser)
 	parser->map.map_cols = -1;
 	parser->map.player.i = -1;
 	parser->parser_flags = 0;
-	parser->map.sprites_count = 0;
+	parser->map.s_count = 0;
 }
 
 static void	parse_parameters(t_parser *parser, char *line)
