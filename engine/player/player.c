@@ -17,7 +17,7 @@ void	init_player(t_player *player, t_parser *par)
 	player->x = (float)par->map.player.j * SCALE + SCALE / 2;
 	player->y = (float)par->map.player.i * SCALE + SCALE / 2;
 	if (par->map.player.orientation == 'S')
-		player->dir = M_PI/2;
+		player->dir = M_PI / 2;
 	else if (par->map.player.orientation == 'N')
 		player->dir = M_PI + M_PI_2;
 	else if (par->map.player.orientation == 'W')
@@ -31,35 +31,18 @@ void	init_player(t_player *player, t_parser *par)
 
 int		move_player(int keycode, t_all *all)
 {
-	fprintf(stderr, "keycode %i", keycode);
 	if (keycode == 65361)
 		all->player->dir -= 0.05f;
 	else if (keycode == 65363)
 		all->player->dir += 0.05f;
-	else if (keycode == 115)
-	{
-		if (all->parser->map.map[(int)((all->player->y - (sinf(all->player->dir) * 5)) / SCALE)][(int)((all->player->x - (cosf(all->player->dir) * 5)) / SCALE)] != '1')
-		{
-			all->player->y -= (sinf(all->player->dir)) * 5;
-			all->player->x -= (cosf(all->player->dir)) * 5;
-		}
-	}
 	else if (keycode == 119)
-	{
-		if (all->parser->map.map[(int)((all->player->y + (sinf(all->player->dir) * 5)) / SCALE)][(int)((all->player->x + (cosf(all->player->dir) * 5)) / SCALE)] != '1')
-		{
-			all->player->y += (sinf(all->player->dir)) * 5;
-			all->player->x += (cosf(all->player->dir)) * 5;
-		}
-	}
+		move_back(all);
+	else if (keycode == 115)
+		move_forward(all);
 	else if (keycode == 97)
-	{
-		if (all->parser->map.map[(int)((all->player->y + (sinf(all->player->dir) * 5)) / SCALE)][(int)((all->player->x - (cosf(all->player->dir) * 5)) / SCALE)] != '1')
-		{
-			all->player->y += (sinf(all->player->dir)) * 5;
-			all->player->x -= (cosf(all->player->dir)) * 5;
-		}
-	}
+		move_left(all);
+	else if (keycode == 100)
+		move_right(all);
 	else if (keycode == 65307)
 		exit_when_all_good(all, 0);
 	if (all->player->dir < 0)

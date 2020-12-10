@@ -21,7 +21,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <math.h>
-
+# include <unistd.h>
 /*
 ** define size of one block
 */
@@ -113,6 +113,25 @@ typedef struct		s_texture
 	int				bpp;
 	int				endian;
 }					t_texture;
+
+typedef struct		s_bitmap
+{
+	unsigned int 	bfsize;
+	unsigned int	reserved;
+	unsigned int 	bfoffbits;
+	unsigned int 	bisize;
+	unsigned int 	biwidth;
+	unsigned int 	biheight;
+	unsigned short	biplanes;
+	unsigned short	bicount;
+	unsigned int 	bicompression;
+	unsigned int 	bisizeimage;
+	unsigned int 	bix_pels_per_meter;
+	unsigned int 	biy_pels_per_meter;
+	unsigned int	biclrused;
+	unsigned int 	biclrimportant;
+}					t_bitmap;
+
 /*
 ** parser_flag
 ** 00000000 - nothing parsed
@@ -149,8 +168,6 @@ typedef struct		s_all
 	float 			*rays_distance;
 }					t_all;
 
-t_point				make_point(float x, float y);
-
 /*
 ** Parser
 */
@@ -161,8 +178,6 @@ void				parse_resolution(t_parser *parser,char *line);
 void				parse_texture(t_parser *parser,char *line);
 void				parse_color(t_parser *parser,char *line);
 char				**parse_and_check_map(t_map *map,int fd);
-void				exit_with_error_print(void);
-void				exit_with_einval_error(void);
 
 /*
 ** Engine
@@ -175,6 +190,9 @@ void 				pixel_put(t_window *data, int x, int y, int color);
 ** Draw functions
 */
 
+void				check_res(t_all *all);
+void				make_screenshot(t_parser *par);
+void				render_all(t_all *all);
 void				render_3d(t_all *all, float distance, int ray_id, float ray_angle);
 void				line_dda(t_all *all, t_point one, t_point second,
 					int color);
@@ -202,6 +220,8 @@ void				init_textures(t_all *all);
 */
 
 void 				exit_when_all_good(t_all *all, int error_code);
+void				exit_with_error_print(void);
+void				exit_with_einval_error(void);
 
 /*
 ** Sprite functions
@@ -220,5 +240,15 @@ void				render_sprites(t_all *all);
 
 void				init_player(t_player *player, t_parser *par);
 int					move_player(int keycode, t_all *all);
+void 				move_forward(t_all *all);
+void 				move_back(t_all *all);
+void				move_left(t_all *all);
+void 				move_right(t_all *all);
+
+/*
+** Norminnette functions
+*/
+
+t_point				make_point(float x, float y);
 
 #endif

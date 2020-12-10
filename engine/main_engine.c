@@ -48,7 +48,7 @@ void	update_screen(t_all *all, t_parser *par)
 	mlx_destroy_image(all->manager->mlx, all->manager->img);
 }
 
-int 	exit_with_cross(void *all_)
+int		exit_with_cross(void *all_)
 {
 	t_all *all;
 
@@ -68,6 +68,7 @@ int		engine(t_parser *par)
 	all.parser = par;
 	all.manager->win = NULL;
 	all.manager->mlx = mlx_init();
+	check_res(&all);
 	all.sprites = NULL;
 	init_textures(&all);
 	init_sprites(&all);

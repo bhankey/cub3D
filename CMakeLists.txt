@@ -19,6 +19,6 @@ add_executable(cub3D main.c parser/parse_map.c parser/parser.c parser/parser_ide
         libft/ft_lstdelone.c libft/ft_strlen.c libft/ft_bzero.c libft/ft_lstsize.c libft/ft_memset.c
         utilits/different_utils.c utilits/list_utilits.c engine/main_engine.c engine/walls/wall_functions.c engine/walls/draw.c engine/utils/pixel_put.c engine/textures/init_textures.c
         engine/walls/render_wall.c engine/sprites/sprite_render.c engine/sprites/sprite_init.c engine/sprites/sprite_helper_to_print.c engine/player/player.c engine/walls/distance_to_wall.c engine/walls/distance_to_wall_second.c
-        gnl/get_next_line_utils_s.c engine/utils/exit_functions.c)
+        gnl/get_next_line_utils_s.c engine/utils/exit_functions.c engine/player/move_functions.c screenshot/screenshot.c engine/utils/different_engine_utils.c)
 target_link_libraries(${PROJECT_NAME} ${LIBX} ${FLAGS})
 target_link_libraries(${PROJECT_NAME} ${LIBFT})

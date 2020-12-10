@@ -16,6 +16,7 @@ SRCS	=	main.c parser/parse_map.c parser/parser.c parser/parser_identifiers.c uti
  			engine/utils/exit_functions.c engine/walls/wall_functions.c engine/walls/render_wall.c \
  			engine/sprites/sprite_render.c engine/sprites/sprite_init.c engine/sprites/sprite_helper_to_print.c \
  			engine/player/player.c engine/walls/distance_to_wall_second.c gnl/get_next_line_utils_s.c \
+ 			engine/player/move_functions.c screenshot/screenshot.c engine/utils/different_engine_utils.c \
 
 
 NAME	=	cub3D
@@ -53,6 +54,7 @@ clean:
 fclean:		clean
 			$(MAKE) fclean -C libft
 			rm -f $(NAME)
+
 re:			fclean all
 
 .PHONY: 	all clean fclean re

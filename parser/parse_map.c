@@ -29,7 +29,7 @@ static t_list		*parse_to_map(t_map *map, int fd)
 		else
 		{
 			map_started = 1;
-			if ((long long int)ft_strlen(line) > map->map_cols)
+			if (ft_strlen(line) > map->map_cols)
 				map->map_cols = ft_strlen(line);
 			buf = ft_lstnew(line);
 			if (buf == NULL)
@@ -171,7 +171,7 @@ static void			check_for_forbidden_char(t_map *map)
 static void			flood_fill(t_map *map, int x, int y)
 {
 	if ((x >= 0 && y >= 0 && x < map->map_rows && map->map[x][y] != '\0' &&
-		 (map->map[x][y] == '0' || map->map[x][y] == '2') &&
+		(map->map[x][y] == '0' || map->map[x][y] == '2') &&
 	map->map[x][y] != ' ') || (x == map->player.i && y == map->player.j))
 	{
 		if (map->map[x][y] == '0')
@@ -184,7 +184,7 @@ static void			flood_fill(t_map *map, int x, int y)
 		flood_fill(map, x, y - 1);
 	}
 	else if ((x >= map->map_rows || y < 0 || x < 0) ||
-			 (map->map[x][y] != '1' && map->map[x][y] != '-' && map->map[x][y] != '+'))
+	(map->map[x][y] != '1' && map->map[x][y] != '-' && map->map[x][y] != '+'))
 		exit_with_einval_error();
 }
 

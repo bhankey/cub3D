@@ -22,7 +22,9 @@ int		is_wall_at(t_all *all, float x, float y)
 		return (1);
 	map_x = (int)(x / SCALE);
 	map_y = (int)(y / SCALE);
-	return (all->parser->map.map[map_y][map_x] == '1' ||
+	return (map_x >= all->parser->map.map_cols ||
+	map_y >= all->parser->map.map_rows ||
+	all->parser->map.map[map_y][map_x] == '1' ||
 			all->parser->map.map[map_y][map_x] == ' ' ||
 			all->parser->map.map[map_y][map_x] == '\0');
 }

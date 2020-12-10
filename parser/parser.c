@@ -12,12 +12,13 @@
 
 #include "cub3d.h"
 
-static void init_text(t_texture *tex)
+static void	init_text(t_texture *tex)
 {
 	tex->img = NULL;
 	tex->addr = NULL;
 	tex->path = NULL;
 }
+
 static void	init_parser(t_parser *parser)
 {
 	parser->res.width = -1;

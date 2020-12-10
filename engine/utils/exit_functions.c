@@ -12,21 +12,31 @@
 
 #include "cub3d.h"
 
-/*
-*
-*/
-
-void 	malloc_error()
+void		malloc_error(void)
 {
 	exit_with_error_print();
 }
 
-void 	sprite_text_error()
+void		sprite_text_error(void)
 {
 	exit_with_einval_error();
 }
 
-void	exit_when_all_good(t_all *all, int error_code)
+static void	destroy_images(t_all *all)
+{
+	if (all->parser->sprite_texture.img != NULL)
+		mlx_destroy_image(all->manager->mlx, all->parser->sprite_texture.img);
+	if (all->parser->south_texture.img != NULL)
+		mlx_destroy_image(all->manager->mlx, all->parser->south_texture.img);
+	if (all->parser->west_texture.img != NULL)
+		mlx_destroy_image(all->manager->mlx, all->parser->west_texture.img);
+	if (all->parser->east_texture.img != NULL)
+		mlx_destroy_image(all->manager->mlx, all->parser->east_texture.img);
+	if (all->parser->north_texture.img != NULL)
+		mlx_destroy_image(all->manager->mlx, all->parser->north_texture.img);
+}
+
+void		exit_when_all_good(t_all *all, int error_code)
 {
 	int i;
 
@@ -40,16 +50,7 @@ void	exit_when_all_good(t_all *all, int error_code)
 	free(all->parser->west_texture.path);
 	free(all->parser->sprite_texture.path);
 	free(all->sprites);
-	if (all->parser->sprite_texture.img != NULL)
-		mlx_destroy_image(all->manager->mlx, all->parser->sprite_texture.img);
-	if (all->parser->south_texture.img != NULL)
-		mlx_destroy_image(all->manager->mlx, all->parser->south_texture.img);
-	if (all->parser->west_texture.img != NULL)
-		mlx_destroy_image(all->manager->mlx, all->parser->west_texture.img);
-	if (all->parser->east_texture.img != NULL)
-		mlx_destroy_image(all->manager->mlx, all->parser->east_texture.img);
-	if (all->parser->north_texture.img != NULL)
-		mlx_destroy_image(all->manager->mlx, all->parser->north_texture.img);
+	destroy_images(all);
 	if (all->manager->win != NULL)
 		mlx_destroy_window(all->manager->mlx, all->manager->win);
 	if (all->manager->mlx != NULL)
