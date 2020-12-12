@@ -61,7 +61,8 @@ void	bmp_maker(t_all *all)
 	fd = open("sreenshot.bmp", O_WRONLY | O_CREAT, 0777);
 	if (fd < 0)
 		exit_when_all_good(all, 1);
-	write(fd, "BM", 2);
+	if (write(fd, "BM", 2) != 2)
+		exit_when_all_good(all, 1);
 	init_bitmap(all, fd);
 	write_data(all, fd);
 	close(fd);
@@ -84,6 +85,7 @@ void	make_screenshot(t_parser *par)
 	init_textures(&all);
 	init_sprites(&all);
 	init_player(all.player, par);
+	check_res(&all);
 	all.manager->img = mlx_new_image(all.manager->mlx,
 									par->res.width, par->res.height);
 	all.manager->addr = mlx_get_data_addr(all.manager->img,
