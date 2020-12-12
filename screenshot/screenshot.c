@@ -14,59 +14,57 @@
 
 void	init_bitmap(t_all *all, int fd)
 {
-	unsigned int	bites_4;
-	unsigned short 	bites_2;
-	bites_4 = (all->parser->res.width * all->parser->res.height *
-					(all->manager->bpp / 8)) + 56;
-	write(fd, &bites_4, 4);
-	bites_4 = 0;
-	write(fd, &bites_4, 4);
-	bites_4 = 54;
-	write(fd, &bites_4, 4);
-	bites_4 = 40;
-	write(fd, &bites_4, 4);
-	bites_4 = all->parser->res.width;
-	write(fd, &bites_4, 4);
-	bites_4 = all->parser->res.height;
-	write(fd, &bites_4, 4);
-	bites_2 = 1;
-	write(fd, &bites_2, 2);
-	bites_2 = all->manager->bpp;
-	write(fd, &bites_2, 2);
-	bites_4 = 0;
-	write(fd, &bites_4, 4);
-	bites_4 = all->parser->res.height * all->parser->res.width;
-	write(fd, &bites_4, 4);
-	bites_4 = 0;
-	write(fd, &bites_4, 4);
-	bites_4 = 0;
-	write(fd, &bites_4, 4);
-	bites_4 = 0;
-	write(fd, &bites_4, 4);
-	bites_4 = 0;
-	write(fd, &bites_4, 4);
+	unsigned char	bitmap[52];
+	unsigned int	buf;
+
+	ft_bzero(bitmap, 52);
+	buf = all->parser->res.width * all->manager->bpp / 8 *
+			all->parser->res.height + 54;
+	bitmap[0] = (unsigned char)(buf);
+	bitmap[1] = (unsigned char)(buf >> 8);
+	bitmap[2] = (unsigned char)(buf >> 16);
+	bitmap[3] = (unsigned char)(buf >> 24);
+	bitmap[8] = (unsigned char)54;
+	bitmap[12] = (unsigned char)40;
+	bitmap[16] = (unsigned char)((int)all->parser->res.width);
+	bitmap[17] = (unsigned char)((int)all->parser->res.width >> 8);
+	bitmap[18] = (unsigned char)((int)all->parser->res.width >> 16);
+	bitmap[19] = (unsigned char)((int)all->parser->res.width >> 24);
+	bitmap[20] = (unsigned char)((int)all->parser->res.height);
+	bitmap[21] = (unsigned char)((int)all->parser->res.height >> 8);
+	bitmap[22] = (unsigned char)((int)all->parser->res.height >> 16);
+	bitmap[23] = (unsigned char)((int)all->parser->res.height >> 24);
+	bitmap[24] = (unsigned char)1;
+	bitmap[26] = (unsigned char)(all->manager->bpp);
+	if (write(fd, bitmap, 52) != 52)
+		exit_with_einval_error();
+}
+
+void	write_data(t_all *all, int fd)
+{
+	int len_str;
+	int i;
+
+	len_str = all->manager->bpp / 8 * all->parser->res.width;
+	i = 0;
+	while (i < all->parser->res.height)
+	{
+		write(fd, all->manager->addr + i * all->manager->line_length, len_str);
+		i++;
+	}
 }
 
 void	bmp_maker(t_all *all)
 {
 	int				fd;
 
-	unsigned char	*addres;
-	int				i;
-
 	fd = open("sreenshot.bmp", O_WRONLY | O_CREAT, 0777);
 	if (fd < 0)
 		exit_when_all_good(all, 1);
 	write(fd, "BM", 2);
 	init_bitmap(all, fd);
-	i = 0;
-	while (i < all->parser->res.height)
-	{
-		addres = (unsigned char *)all->manager->addr;
-		write(fd, &(addres[(all->parser->res.height - (i - 1)) *
-			all->manager->line_length]), all->manager->line_length);
-		i++;
-	}
+	write_data(all, fd);
+	close(fd);
 }
 
 void	make_screenshot(t_parser *par)
