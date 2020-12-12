@@ -15,13 +15,14 @@
 void	init_bitmap(t_all *all, t_bitmap *bitmap)
 {
 	bitmap->bfsize = (all->parser->res.width * all->parser->res.height *
-					(all->manager->bpp / 8)) + sizeof(t_bitmap) + 2;
+					(all->manager->bpp / 8)) + 56;
 	bitmap->bfoffbits = 54;
 	bitmap->bisize = 40;
 	bitmap->biwidth = all->parser->res.width;
 	bitmap->biheight = all->parser->res.height;
 	bitmap->biplanes = 1;
 	bitmap->bicount = all->manager->bpp;
+	bitmap->bisizeimage = all->parser->res.height * all->parser->res.width;
 }
 
 void	bmp_maker(t_all *all)
@@ -41,9 +42,9 @@ void	bmp_maker(t_all *all)
 	i = 0;
 	while (i < all->parser->res.height)
 	{
-		addres = all->manager->addr;
-		write(fd, &addres[(all->parser->res.height - (i - 1)) *
-			all->manager->line_length], all->manager->line_length);
+		addres = (unsigned char *)all->manager->addr;
+		write(fd, &(addres[(all->parser->res.height - (i - 1)) *
+			all->manager->line_length]), all->manager->line_length);
 		i++;
 	}
 }

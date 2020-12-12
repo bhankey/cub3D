@@ -48,7 +48,7 @@ $(NAME):	$(OBJS)
 			$(CC) $(CFALGS) -o $(NAME) $(OBJS) -O3 ./libft/libft.a $(MLX) -lm
 
 clean:
-			rm -f $(OBJS)
+			rm -f $(OBJS) libmlx.dylib
 			$(MAKE) clean -C libft
 			$(MAKE) clean -C $(MLX_D)
 
