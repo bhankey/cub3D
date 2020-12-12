@@ -12,23 +12,45 @@
 
 #include "cub3d.h"
 
-void	init_bitmap(t_all *all, t_bitmap *bitmap)
+void	init_bitmap(t_all *all, int fd)
 {
-	bitmap->bfsize = (all->parser->res.width * all->parser->res.height *
+	unsigned int	bites_4;
+	unsigned short 	bites_2;
+	bites_4 = (all->parser->res.width * all->parser->res.height *
 					(all->manager->bpp / 8)) + 56;
-	bitmap->bfoffbits = 54;
-	bitmap->bisize = 40;
-	bitmap->biwidth = all->parser->res.width;
-	bitmap->biheight = all->parser->res.height;
-	bitmap->biplanes = 1;
-	bitmap->bicount = all->manager->bpp;
-	bitmap->bisizeimage = all->parser->res.height * all->parser->res.width;
+	write(fd, &bites_4, 4);
+	bites_4 = 0;
+	write(fd, &bites_4, 4);
+	bites_4 = 54;
+	write(fd, &bites_4, 4);
+	bites_4 = 40;
+	write(fd, &bites_4, 4);
+	bites_4 = all->parser->res.width;
+	write(fd, &bites_4, 4);
+	bites_4 = all->parser->res.height;
+	write(fd, &bites_4, 4);
+	bites_2 = 1;
+	write(fd, &bites_2, 2);
+	bites_2 = all->manager->bpp;
+	write(fd, &bites_2, 2);
+	bites_4 = 0;
+	write(fd, &bites_4, 4);
+	bites_4 = all->parser->res.height * all->parser->res.width;
+	write(fd, &bites_4, 4);
+	bites_4 = 0;
+	write(fd, &bites_4, 4);
+	bites_4 = 0;
+	write(fd, &bites_4, 4);
+	bites_4 = 0;
+	write(fd, &bites_4, 4);
+	bites_4 = 0;
+	write(fd, &bites_4, 4);
 }
 
 void	bmp_maker(t_all *all)
 {
 	int				fd;
-	t_bitmap		bitmap;
+
 	unsigned char	*addres;
 	int				i;
 
@@ -36,9 +58,7 @@ void	bmp_maker(t_all *all)
 	if (fd < 0)
 		exit_when_all_good(all, 1);
 	write(fd, "BM", 2);
-	ft_bzero(&bitmap, sizeof(t_bitmap));
-	init_bitmap(all, &bitmap);
-	write(fd, &bitmap, sizeof(t_bitmap));
+	init_bitmap(all, fd);
 	i = 0;
 	while (i < all->parser->res.height)
 	{
