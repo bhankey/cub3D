@@ -27,7 +27,7 @@ static void		shrink_spites_array(t_all *all)
 			count++;
 		i++;
 	}
-	new = calloc(count, sizeof(t_sprites));
+	new = ft_calloc(count, sizeof(t_sprites));
 	i = 0;
 	j = 0;
 	while (i < all->parser->map.s_count)

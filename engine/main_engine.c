@@ -20,7 +20,7 @@ void	render_all(t_all *all)
 	int		i;
 
 	num_rays = all->parser->res.width;
-	all->rays_distance = calloc(num_rays, sizeof(float));
+	all->rays_distance = ft_calloc(num_rays, sizeof(float));
 	ray_angle = all->player->dir - (all->player->fov / 2);
 	i = 0;
 	while (i < num_rays)
