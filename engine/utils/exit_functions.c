@@ -53,8 +53,6 @@ void		exit_when_all_good(t_all *all, int error_code)
 	destroy_images(all);
 	if (all->manager->win != NULL)
 		mlx_destroy_window(all->manager->mlx, all->manager->win);
-	if (all->manager->mlx != NULL)
-		mlx_destroy_display(all->manager->mlx);
 	if (error_code == 2)
 		malloc_error();
 	if (error_code == 1)
