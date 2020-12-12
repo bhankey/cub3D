@@ -21,7 +21,7 @@ int		end_on_cub(const char *str)
 		i++;
 	if (i < 5)
 		exit_with_einval_error();
-	if (str[i - 1] != 'b' && str[i - 2] != 'u' && str[i - 3] != 'c' &&
+	if (str[i - 1] != 'b' || str[i - 2] != 'u' || str[i - 3] != 'c' ||
 	str[i - 4] != '.')
 		exit_with_einval_error();
 	return (1);
