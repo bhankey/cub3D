@@ -119,13 +119,9 @@ void			render_3d(t_all *all, float distance, int ray_id,
 	dist_project = (all->parser->res.width / 2.0) /
 			tanf(all->player->fov / 2.0);
 	wall_height = (SCALE / correct_dist) * dist_project;
-	line_dda(all, make_point((float)ray_id, 0.0f), make_point((float)ray_id,
-		(all->parser->res.height / 2.0) - (wall_height / 2)),
-		all->parser->ceiling_color.rgb);
+	draw_strip(all, make_point(ray_id, 0), all->parser->res.height / 2.0, all->parser->ceiling_color.rgb);
+	draw_strip(all, make_point(ray_id, all->parser->res.height / 2.0), all->parser->res.height, all->parser->floor_color.rgb);
 	print_wall(all, make_point(ray_id,
 	(all->parser->res.height / 2.0) - (wall_height / 2)),
 			wall_height, ray_angle);
-	line_dda(all, make_point((float)ray_id, (all->parser->res.height
-	/ 2.0) + (wall_height / 2.0)), make_point((float)ray_id,
-			all->parser->res.height), all->parser->floor_color.rgb);
 }

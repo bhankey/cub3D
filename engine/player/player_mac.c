@@ -31,13 +31,13 @@ void	init_player(t_player *player, t_parser *par)
 
 int		move_player(int keycode, t_all *all)
 {
-	if (keycode == 124)
+	if (keycode == 123)
 		all->player->dir -= 0.05f;
-	else if (keycode == 123)
+	else if (keycode == 124)
 		all->player->dir += 0.05f;
-	else if (keycode == 1)
-		move_back(all);
 	else if (keycode == 13)
+		move_back(all);
+	else if (keycode == 1)
 		move_forward(all);
 	else if (keycode == 0)
 		move_left(all);

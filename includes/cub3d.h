@@ -199,8 +199,7 @@ void				make_screenshot(t_parser *par);
 void				render_all(t_all *all);
 void				render_3d(t_all *all, float distance, int ray_id,
 					float ray_angle);
-void				line_dda(t_all *all, t_point one, t_point second,
-					int color);
+void				draw_strip(t_all *all, t_point one, int y2, int color);
 void				pixel_put(t_window *data, int x, int y, int color);
 void				update_screen(t_all *all, t_parser *par);
 
