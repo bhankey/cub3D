@@ -46,11 +46,11 @@ void	write_data(t_all *all, int fd)
 	int i;
 
 	len_str = all->manager->bpp / 8 * all->parser->res.width;
-	i = 0;
-	while (i < all->parser->res.height)
+	i = all->parser->res.height - 1;
+	while (i >= 0)
 	{
 		write(fd, all->manager->addr + i * all->manager->line_length, len_str);
-		i++;
+		i--;
 	}
 }
 
