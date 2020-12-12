@@ -20,7 +20,8 @@ void	render_all(t_all *all)
 	int		i;
 
 	num_rays = all->parser->res.width;
-	all->rays_distance = ft_calloc(num_rays, sizeof(float));
+	if ((all->rays_distance = ft_calloc(num_rays, sizeof(float))) == NULL)
+		exit_when_all_good(all, 2);
 	ray_angle = all->player->dir - (all->player->fov / 2);
 	i = 0;
 	while (i < num_rays)
@@ -37,11 +38,13 @@ void	render_all(t_all *all)
 
 void	update_screen(t_all *all, t_parser *par)
 {
-	all->manager->img = mlx_new_image(all->manager->mlx,
-						par->res.width, par->res.height);
-	all->manager->addr = mlx_get_data_addr(all->manager->img,
+	if ((all->manager->img = mlx_new_image(all->manager->mlx,
+						par->res.width, par->res.height)) == NULL)
+		exit_when_all_good(all, 2);
+	if ((all->manager->addr = mlx_get_data_addr(all->manager->img,
 	&(all->manager->bpp), &(all->manager->line_length),
-	&(all->manager->endian));
+	&(all->manager->endian))) == NULL)
+		exit_when_all_good(all, 2);
 	render_all(all);
 	mlx_put_image_to_window(all->manager->mlx, all->manager->win,
 					all->manager->img, 0, 0);
@@ -67,14 +70,16 @@ int		engine(t_parser *par)
 	all.manager = &window;
 	all.parser = par;
 	all.manager->win = NULL;
-	all.manager->mlx = mlx_init();
+	if ((all.manager->mlx = mlx_init()) == NULL)
+		exit_when_all_good(&all, 2);
 	check_res(&all);
 	all.sprites = NULL;
 	init_textures(&all);
 	init_sprites(&all);
 	init_player(all.player, par);
-	all.manager->win = mlx_new_window(all.manager->mlx, par->res.width,
-								par->res.height, "cub3D");
+	if ((all.manager->win = mlx_new_window(all.manager->mlx, par->res.width,
+								par->res.height, "cub3D")) == NULL)
+		exit_when_all_good(&all, 2);
 	update_screen(&all, par);
 	mlx_hook(window.win, 17, (1L << 17), exit_with_cross, &all);
 	mlx_hook(window.win, 2, (1L << 0), move_player, &all);

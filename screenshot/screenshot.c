@@ -68,6 +68,13 @@ void	bmp_maker(t_all *all)
 	close(fd);
 }
 
+void	init_screnshot_norm(t_all *all)
+{
+	all->sprites = NULL;
+	init_textures(all);
+	init_sprites(all);
+}
+
 void	make_screenshot(t_parser *par)
 {
 	t_all		all;
@@ -79,17 +86,18 @@ void	make_screenshot(t_parser *par)
 	all.parser = par;
 	all.manager->win = NULL;
 	all.manager->mlx = mlx_init();
-	if (all.manager->mlx == NULL)
+	if ((all.manager->mlx = mlx_init()) == NULL)
 		exit_when_all_good(&all, 2);
-	all.sprites = NULL;
-	init_textures(&all);
-	init_sprites(&all);
+	init_screnshot_norm(&all);
 	init_player(all.player, par);
 	check_res(&all);
-	all.manager->img = mlx_new_image(all.manager->mlx,
-									par->res.width, par->res.height);
-	all.manager->addr = mlx_get_data_addr(all.manager->img,
-	&(all.manager->bpp), &(all.manager->line_length), &(all.manager->endian));
+	if ((all.manager->img = mlx_new_image(all.manager->mlx,
+									par->res.width, par->res.height)) == NULL)
+		exit_when_all_good(&all, 2);
+	if ((all.manager->addr = mlx_get_data_addr(all.manager->img,
+	&(all.manager->bpp), &(all.manager->line_length), &(all.manager->endian)))
+			== NULL)
+		exit_when_all_good(&all, 2);
 	render_all(&all);
 	bmp_maker(&all);
 	mlx_destroy_image(all.manager->mlx, all.manager->img);

@@ -12,6 +12,12 @@
 
 #include "cub3d.h"
 
+static void		shrink_sprites_array_norm_helper(int *i, int *j)
+{
+	*i = 0;
+	*j = 0;
+}
+
 static void		shrink_spites_array(t_all *all)
 {
 	int			count;
@@ -27,9 +33,9 @@ static void		shrink_spites_array(t_all *all)
 			count++;
 		i++;
 	}
-	new = ft_calloc(count, sizeof(t_sprites));
-	i = 0;
-	j = 0;
+	if ((new = ft_calloc(count, sizeof(t_sprites))) == NULL)
+		exit_when_all_good(all, 2);
+	shrink_sprites_array_norm_helper(&i, &j);
 	while (i < all->parser->map.s_count)
 	{
 		if (all->sprites[i].x != 0)
