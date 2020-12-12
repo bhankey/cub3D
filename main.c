@@ -1,8 +1,18 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bhankey <bhankey@student.21-school.ru>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/12/12 15:33:27 by bhankey           #+#    #+#             */
+/*   Updated: 2020/12/12 15:33:29 by bhankey          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "cub3d.h"
 
-int 	end_on_cub(const char *str)
+int		end_on_cub(const char *str)
 {
 	int i;
 
@@ -32,5 +42,5 @@ int		main(int argc, char **argv)
 		engine(&pas);
 	else
 		make_screenshot(&pas);
-	exit( 0);
+	exit(0);
 }
