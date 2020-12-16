@@ -1,18 +1,46 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bhankey <bhankey@student.21-school.ru>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/12/12 15:33:27 by bhankey           #+#    #+#             */
+/*   Updated: 2020/12/12 15:33:29 by bhankey          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "cub3d.h"
-int main()
+
+int		end_on_cub(const char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i] != '\0')
+		i++;
+	if (i < 5)
+		exit_with_einval_error();
+	if (str[i - 1] != 'b' || str[i - 2] != 'u' || str[i - 3] != 'c' ||
+	str[i - 4] != '.')
+		exit_with_einval_error();
+	return (1);
+}
+
+int		main(int argc, char **argv)
 {
 	t_parser pas;
 
-	parser(&pas, "map.cub");
-	char **l = pas.map.map;
-	while (*l)
-	{
-		printf("%s\n", *l);
-		l++;
-	}
-	engine(&pas);
-
-	exit( 0);
+	if (argc == 1 || argc > 3)
+		exit_with_einval_error();
+	if (argc == 3)
+		if (ft_strncmp(argv[2], "--save", 7))
+			exit_with_einval_error();
+	end_on_cub(argv[1]);
+	parser(&pas, argv[1]);
+	if (argc == 2)
+		engine(&pas);
+	else
+		make_screenshot(&pas);
+	exit(0);
 }

@@ -1,23 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   list_utilits.c                                     :+:      :+:    :+:   */
+/*   get_next_line_utils_s.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bhankey <bhankey@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/22 17:17:47 by bhankey           #+#    #+#             */
-/*   Updated: 2020/11/22 17:17:49 by bhankey          ###   ########.fr       */
+/*   Created: 2020/12/09 23:53:57 by bhankey           #+#    #+#             */
+/*   Updated: 2020/12/09 23:53:59 by bhankey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "get_next_line.h"
 
-void	remove_str(void *content)
+int	string_helper(t_line *string)
 {
-	char *str;
-
-	if (content == NULL)
-		return ;
-	str = (char *)content;
-	free(str);
+	string->line[0] = '\0';
+	return (0);
 }

@@ -33,62 +33,7 @@ void			parse_resolution(t_parser *parser, char *line)
 	parser->parser_flags |= 1;
 }
 
-static void		parse_texture_help(t_parser *parser, char *line, char **texture)
-{
-	if (*line == 'N')
-	{
-		parser->parser_flags |= 2u;
-		parser->north_texture = *texture;
-	}
-	else if (*line == 'S' && *(line + 1) == 'O')
-	{
-		parser->parser_flags |= 4u;
-		parser->south_texture = *texture;
-	}
-	else if (*line == 'W')
-	{
-		parser->parser_flags |= 8u;
-		parser->west_texture = *texture;
-	}
-	else if (*line == 'E')
-	{
-		parser->parser_flags |= 16u;
-		parser->east_texture = *texture;
-	}
-	else
-	{
-		parser->parser_flags |= 32u;
-		parser->sprite_texture = *texture;
-	}
-}
-
-void			parse_texture(t_parser *parser, char *line)
-{
-	int		i;
-	int		j;
-	char	*texture;
-	int		len;
-
-	i = 3;
-	while (ft_isspace(line[i]))
-		i++;
-	len = 0;
-	j = i;
-	while (line[j++] != '\0')
-		len++;
-	texture = (char *)malloc(len + 3);
-	j = 0;
-	while (line[i] != '\0')
-	{
-		texture[j++] = line[i++];
-	}
-	texture[j] = '\0';
-	if (*texture == '\0')
-		exit_with_einval_error();
-	parse_texture_help(parser, line, &texture);
-}
-
-static int		parse_color_num(char *line)
+static int		parse_color_num(const char *line)
 {
 	int	len;
 	int	i;
@@ -114,21 +59,27 @@ static int		parse_color_num(char *line)
 	return (res);
 }
 
+static void		ident_color(t_color **color, unsigned int *type,
+						const char *line, t_parser *parser)
+{
+	if (*line == 'F')
+	{
+		*color = &(parser->floor_color);
+		*type = 64;
+	}
+	else
+	{
+		*color = &(parser->ceiling_color);
+		*type = 128;
+	}
+}
+
 void			parse_color(t_parser *parser, char *line)
 {
 	unsigned int	type;
 	t_color			*color;
 
-	if (*line == 'F')
-	{
-		color = &(parser->floor_color);
-		type = 64;
-	}
-	else
-	{
-		color = &(parser->ceiling_color);
-		type = 128;
-	}
+	ident_color(&color, &type, line, parser);
 	if ((parser->parser_flags & type) != 0)
 		exit_with_einval_error();
 	line += 2;

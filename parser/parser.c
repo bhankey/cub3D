@@ -12,15 +12,22 @@
 
 #include "cub3d.h"
 
+static void	init_text(t_texture *tex)
+{
+	tex->img = NULL;
+	tex->addr = NULL;
+	tex->path = NULL;
+}
+
 static void	init_parser(t_parser *parser)
 {
 	parser->res.width = -1;
 	parser->res.height = -1;
-	parser->north_texture = "";
-	parser->south_texture = "";
-	parser->west_texture = "";
-	parser->east_texture = "";
-	parser->sprite_texture = "";
+	init_text(&(parser->north_texture));
+	init_text(&(parser->sprite_texture));
+	init_text(&(parser->west_texture));
+	init_text(&(parser->east_texture));
+	init_text(&(parser->south_texture));
 	parser->floor_color.red = -1;
 	parser->floor_color.green = -1;
 	parser->floor_color.blue = -1;
@@ -28,46 +35,10 @@ static void	init_parser(t_parser *parser)
 	parser->ceiling_color.green = -1;
 	parser->ceiling_color.blue = -1;
 	parser->map.map = NULL;
-	parser->map.max_string = -1;
+	parser->map.map_cols = -1;
 	parser->map.player.i = -1;
 	parser->parser_flags = 0;
-}
-
-static void	parse_parameters(t_parser *parser, char *line)
-{
-	if (*line == 'R' && *(line + 1) == ' ')
-		parse_resolution(parser, line);
-	else if (*line == 'N' && *(line + 1) == 'O' && *(line + 2) == ' ')
-		if ((parser->parser_flags & 2u) != 0)
-			exit_with_einval_error();
-		else
-			parse_texture(parser, line);
-	else if (*line == 'S' && *(line + 1) == 'O' && *(line + 2) == ' ')
-		if ((parser->parser_flags & 4u) != 0)
-			exit_with_einval_error();
-		else
-			parse_texture(parser, line);
-	else if (*line == 'W' && *(line + 1) == 'E' && *(line + 2) == ' ')
-		if ((parser->parser_flags & 8u) != 0)
-			exit_with_einval_error();
-		else
-			parse_texture(parser, line);
-	else if (*line == 'E' && *(line + 1) == 'A' && *(line + 2) == ' ')
-		if ((parser->parser_flags & 16u) != 0)
-			exit_with_einval_error();
-		else
-			parse_texture(parser, line);
-	else if (*line == 'S' && *(line + 1) == ' ')
-		if ((parser->parser_flags & 32u) != 0)
-			exit_with_einval_error();
-		else
-			parse_texture(parser, line);
-	else if (*line == 'F' && *(line + 1) == ' ')
-		parse_color(parser, line);
-	else if (*line == 'C' && *(line + 1) == ' ')
-		parse_color(parser, line);
-	else
-		exit_with_einval_error();
+	parser->map.s_count = 0;
 }
 
 static void	parse_all_stuff(t_parser *parser, int fd)
@@ -110,5 +81,15 @@ int			parser(t_parser *parser, char *file_name)
 		exit(EXIT_FAILURE);
 	}
 	parse_all_stuff(parser, fd);
+	parser->ceiling_color.rgb = parser->ceiling_color.red;
+	parser->ceiling_color.rgb = (parser->ceiling_color.rgb << 8) +
+			parser->ceiling_color.green;
+	parser->ceiling_color.rgb = (parser->ceiling_color.rgb << 8) +
+								parser->ceiling_color.blue;
+	parser->floor_color.rgb = parser->floor_color.red;
+	parser->floor_color.rgb = (parser->floor_color.rgb << 8) +
+								parser->floor_color.green;
+	parser->floor_color.rgb = (parser->floor_color.rgb << 8) +
+								parser->floor_color.blue;
 	return (0);
 }

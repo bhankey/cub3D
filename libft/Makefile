@@ -28,7 +28,7 @@ CC		= gcc
 
 MKLIB	= ar rc
 
-CFLAGS	= -Wall -Wextra -Werror -I ./
+CFLAGS	= -Wall -Wextra -Werror -O3 -I ./
 
 all:		$(NAME)
 
